@@ -149,27 +149,55 @@ function updateHero(imgSrc) {
 </div>
 
 <script>
-var imagesArray = <?php echo json_encode($all_images); ?>;
+// مصفوفة الصور الأصلية القادمة من السيرفر
+var rawImages = <?php echo json_encode($all_images); ?>;
+
+// الحل الذكي: بناء مصفوفة جديدة تحتوي على المسار الكامل الصحيح لكل الصور تلقائياً
+var imagesArray = rawImages.map(function(img) {
+    // إذا كان الاسم يحتوي مسبقاً على المجلد لا نكرره، وإلا نضيفه
+    if (img.startsWith('img/attractions/')) {
+        return img;
+    } else {
+        return 'img/attractions/' + img;
+    }
+});
+
 var currentIndex = 0;
 
+// دالة فتح الـ Modal
 function openModal(imgSrc) {
     var modal = document.getElementById("imageModal");
     var modalImg = document.getElementById("img01");
     
+    // الآن البحث سينجح 100% لأن المسارات متطابقة في المصفوفة
     currentIndex = imagesArray.indexOf(imgSrc);
+    
+    // إذا لم يجدها لأي سبب، نجعل المؤشر يبدأ من 0 كحماية للكود
+    if (currentIndex === -1) {
+        currentIndex = 0;
+    }
 
     modal.style.display = "flex";
     modalImg.src = imgSrc;
 }
 
+// دالة تقليب الصور (يمين ويسار) المضمونة
 function changeImage(n) {
     currentIndex += n;
-    if (currentIndex >= imagesArray.length) { currentIndex = 0; }
-    if (currentIndex < 0) { currentIndex = imagesArray.length - 1; }
     
+    // حلقة دائرية تمنع خروج المؤشر عن النطاق
+    if (currentIndex >= imagesArray.length) { 
+        currentIndex = 0; 
+    }
+    if (currentIndex < 0) { 
+        currentIndex = imagesArray.length - 1; 
+    }
+    
+    // تمرير المسار الكامل المصلح مباشرة لمنع ظهور الأيقونة المكسورة
     document.getElementById("img01").src = imagesArray[currentIndex];
 }
 
+// دالة غلق الـ Modal
 function closeModal() {
     document.getElementById("imageModal").style.display = "none";
 }

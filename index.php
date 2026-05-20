@@ -99,10 +99,10 @@ $count_unesco = mysqli_fetch_assoc($res_unesco)['total'];
                     <div class="wilaya-img-wrapper">
                         <img src="img/wilayas/<?php echo $imageUrl; ?>" alt="<?php echo ($lang == 'ar') ? $row['name_ar'] : $row['name_en'];?>" class="wilaya-main-img">
                         
-                        <button class="card-icon-btn wishlist-btn main-fav-btn" data-id="<?php echo $row['id']; ?>" data-type="wilaya">
-    <i class="<?php echo in_array('wilaya_'.$row['id'], $user_favs) ? 'fas fa-heart' : 'far fa-heart'; ?>" 
-       style="<?php echo in_array('wilaya_'.$row['id'], $user_favs) ? 'color: #ff4757;' : ''; ?>"></i>
-</button>
+                                    <button class="icon-btn fav-btn-v4 main-fav-btn" data-id="<?php echo $attr['id']; ?>" data-type="attraction">
+                <i class="<?php echo in_array('attraction_'.$attr['id'], $user_favs) ? 'fas fa-heart' : 'far fa-heart'; ?>" 
+                   style="<?php echo in_array('attraction_'.$attr['id'], $user_favs) ? 'color: #ff4757;' : ''; ?>"></i>
+            </button>
                         
                         <button class="card-icon-btn loc-btn-v4" title="Wilaya location" 
        onclick="showMapModal('<?php echo $row['lat']; ?>', '<?php echo $row['lng']; ?>', '<?php echo addslashes(($lang == 'ar') ? $row['name_ar'] : $row['name_en']); ?>')">

@@ -15,6 +15,18 @@ $current_params['lang'] = 'ar';
 $ar_link = "?" . http_build_query($current_params);
 $current_params['lang'] = 'en';
 $en_link = "?" . http_build_query($current_params);
+
+// جلب مسار الصورة من عمود profile_image كما هو في قاعدة البيانات تماماً
+$header_user_image = "";
+if (isset($_SESSION['user_id'])) {
+    $current_u_id = $_SESSION['user_id'];
+    $img_check_query = "SELECT profile_image FROM users WHERE id = '$current_u_id'";
+    $img_check_res = mysqli_query($conn, $img_check_query);
+    if ($img_check_res && mysqli_num_rows($img_check_res) > 0) {
+        $img_row = mysqli_fetch_assoc($img_check_res);
+        $header_user_image = trim($img_row['profile_image']); 
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="<?= $_SESSION['lang'] ?>" dir="<?= $_SESSION['lang'] == 'ar' ? 'rtl' : 'ltr' ?>">
@@ -50,12 +62,10 @@ $en_link = "?" . http_build_query($current_params);
                 <li><a href="index.php#wilayas-section"><?= $texts[$lang]['wilayas'] ?></a></li>
                 <li><a href="index.php#attractions-v4"><?= $texts[$lang]['attractions'] ?></a></li>
                 <li><a href="index.php#map"><?= $texts[$lang]['map'] ?></a></li>
-<div class="ai-trigger-v3" onclick="startAiDiscovery()" title="<?= $texts[$lang]['ai_assistant'] ?>">
-                        <i class="fas fa-wand-magic-sparkles"></i>
-                    </div>
+                <div class="ai-trigger-v3" onclick="startAiDiscovery()" title="<?= $texts[$lang]['ai_assistant'] ?>">
+                    <i class="fas fa-wand-magic-sparkles"></i>
+                </div>
                 <div class="search-section-v4">
-                   
-                    
                     <form action="search.php" method="GET" class="search-box-v4">
                         <input type="text" name="query" placeholder="<?= $texts[$lang]['search'] ?>" required>
                         <button type="submit"><i class="fas fa-search"></i></button>
@@ -77,43 +87,32 @@ $en_link = "?" . http_build_query($current_params);
                 </ul>
             </div>
 
-           <div class="header-auth-section">
-    <?php if(isset($_SESSION['user_id'])): ?>
-        <?php
-            // جلب الصورة الشخصية للمستخدم الحالي من قاعدة البيانات ديناميكياً
-            $current_user_id = $_SESSION['user_id'];
-            $header_query = "SELECT profile_image FROM users WHERE id = '$current_user_id'";
-            $header_result = mysqli_query($conn, $header_query);
-            $header_user_image = "";
-            if ($header_result && $header_row = mysqli_fetch_assoc($header_result)) {
-                $header_user_image = $header_row['profile_image'];
-            }
-        ?>
+            <div class="header-auth-section">
+                <?php if(isset($_SESSION['user_id'])): ?>
+                    <div class="user-profile-wrapper" onclick="toggleUserMenu(event)">
+                        
+                        <div class="user-avatar-circle">
+                            <?php if(!empty($header_user_image)): ?>
+                                <img src="<?php echo $header_user_image; ?>" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                            <?php else: ?>
+                                <i class="fas fa-user"></i>
+                            <?php endif; ?>
+                        </div>
 
-        <div class="user-profile-wrapper" onclick="toggleUserMenu()">
-            <div class="user-avatar-circle" style="display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                <?php if(!empty($header_user_image) && file_exists("img/users/" . $header_user_image)): ?>
-                    <img src="img/users/<?php echo $header_user_image; ?>" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                        <div id="userDropdown" class="user-dropdown-menu">
+                            <a href="profile.php"><i class="fas fa-id-card"></i><?= $texts[$lang]['profile'] ?></a>
+                            <a href="logout.php" class="logout-item"><i class="fas fa-sign-out-alt"></i> <?= $texts[$lang]['logout'] ?></a>
+                        </div>
+                    </div>
                 <?php else: ?>
-                    <i class="fas fa-user"></i>
+                    <a href="login.php" class="auth-btn-v3"><?= $texts[$lang]['login'] ?></a>
                 <?php endif; ?>
             </div>
-
-            <div id="userDropdown" class="user-dropdown-menu">
-                <a href="profile.php"><i class="fas fa-id-card"></i> <?= $texts[$lang]['profile'] ?></a>
-                <a href="logout.php" class="logout-item"><i class="fas fa-sign-out-alt"></i> <?= $texts[$lang]['logout'] ?></a>
-            </div>
-        </div>
-    <?php else: ?>
-        <a href="login.php" class="auth-btn-v3"><?= $texts[$lang]['login'] ?></a>
-    <?php endif; ?>
-</div>
         </div>
     </div>
 </nav>
 
 <style>
-    /* تنسيق الأيقونة الذكية */
     .ai-trigger-v3 {
         display: flex;
         align-items: center;
@@ -135,8 +134,6 @@ $en_link = "?" . http_build_query($current_params);
         box-shadow: 0 0 15px rgba(197, 160, 89, 0.4);
         transform: translateY(-2px);
     }
-
-    /* التنسيقات الأصلية لضمان عدم تداخل الأكواد */
     .search-section-v4 { display: flex !important; align-items: center !important; justify-content: center !important; flex: 1.5 !important; margin: 0 30px !important; }
     .search-box-v4 { display: flex !important; align-items: center !important; background: rgba(255, 255, 255, 0.9) !important; border: 1px solid #ffffff !important; border-radius: 50px !important; width: 100% !important; max-width: 450px !important; height: 42px !important; padding: 0 20px !important; box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important; transition: all 0.3s ease !important; }
     .search-box-v4 input { background: transparent !important; border: none !important; outline: none !important; color: #333 !important; width: 100% !important; font-family: 'Cairo', sans-serif !important; font-size: 14px !important; }
@@ -163,8 +160,6 @@ function startAiDiscovery() {
             const mapSection = document.getElementById('map');
             if (mapSection) {
                 mapSection.scrollIntoView({ behavior: 'smooth' });
-                
-                // الربط بالخريطة العالمية window.map
                 setTimeout(() => {
                     if (window.map) {
                         window.map.flyTo([userLat, userLng], 12, { animate: true, duration: 2 });
@@ -187,7 +182,17 @@ function startAiDiscovery() {
     }
 }
 
-function toggleUserMenu() {
+// دالة الضغط الأصلية مع منع انتشار الحدث لضمان عمل الاختفاء التلقائي بسلاسة
+function toggleUserMenu(event) {
+    if (event) event.stopPropagation();
     document.getElementById("userDropdown").classList.toggle("show");
 }
+
+// كود إغلاق النافذة المنسدلة تلقائياً عند الضغط في أي مكان فارغ بالواجهة
+window.addEventListener('click', function(e) {
+    const dropdown = document.getElementById('userDropdown');
+    if (dropdown && dropdown.classList.contains('show')) {
+        dropdown.classList.remove('show');
+    }
+});
 </script>

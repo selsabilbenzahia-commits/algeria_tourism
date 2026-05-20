@@ -12,7 +12,7 @@ if(isset($_SESSION['user_id'])) {
 }
 
 // جلب الإحصائيات بدقة
-$res_wilayas = mysqli_query($conn, "SELECT COUNT(*) as total FROM wilayas");
+$res_wilayas = mysqli_query($conn, "SELECT COUNT(*) as total FROM wilayas  WHERE image IS NOT NULL AND image != '' ORDER BY code ASC");
 $count_wilayas = mysqli_fetch_assoc($res_wilayas)['total'];
 
 $res_attractions = mysqli_query($conn, "SELECT COUNT(*) as total FROM attractions");
@@ -496,8 +496,9 @@ $(document).ready(function() {
 
             </div>
 
-            <textarea 
+            <textarea  
                 id="customSuggestion"
+                name="Suggestion"
                 placeholder="<?= $texts[$lang]['write_suggestion'] ?>"
             ></textarea>
 

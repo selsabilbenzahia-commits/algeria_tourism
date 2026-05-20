@@ -27,13 +27,13 @@ if (isset($_POST['update'])) {
     $lat = $_POST['lat'];
     $lng = $_POST['lng'];
     
-    // منطق الصورة باستخدام مجلد images (كودك الأصلي كما هو)
+    // --- التعديل المطلب: ضبط منطق تعديل الصورة ليتوافق مع الاسم الصافي والمجلد الجديد ---
     if (!empty($_FILES['image']['name'])) {
-        $image_name = time() . '_' . $_FILES['image']['name'];
-        $target_path = "images/" . $image_name;
+        $image_name = time() . '_' . basename($_FILES['image']['name']);
+        $target_path = "img/restaurants/" . $image_name; // المسار المادي الفعلي للرفع
         
         if (move_uploaded_file($_FILES['image']['tmp_name'], $target_path)) {
-            $final_image = $target_path;
+            $final_image = $image_name; // حفظ الاسم الصافي فقط في قاعدة البيانات
         } else {
             $final_image = $data['image'];
         }
@@ -87,7 +87,8 @@ if (isset($_POST['update'])) {
         .btn-back { color: #64748b; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 15px; }
         .btn-back:hover { color: var(--gold); }
 
-        .form-container h1 { font-size: 24px; color: var(--dark); margin-bottom: 30px; text-align: center; border-bottom: 2px solid var(--gold); display: inline-block; padding-bottom: 5px; width: 100%; }
+        .form-container h1 { font-size: 26px; color: var(--dark); margin-bottom: 35px; text-align: center; position: relative; padding-bottom: 12px; }
+          .form-container h1::after { content: ''; width: 60px; height: 4px; background: var(--gold); position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); border-radius: 2px; }
         
         .form-group { margin-bottom: 20px; text-align: <?php echo ($lang == 'ar' ? 'right' : 'left'); ?>; }
         label { display: block; margin-bottom: 8px; font-weight: bold; color: #475569; }
@@ -119,7 +120,6 @@ if (isset($_POST['update'])) {
     </div>
     <div class="main-content">
         <div class="form-container">
-            <!-- زر الرجوع -->
             <div class="back-nav">
                 <a href="manage_restaurants.php" class="btn-back">
                     <i class="fas <?php echo ($lang == 'ar' ? 'fa-arrow-right' : 'fa-arrow-left'); ?>"></i>
@@ -155,7 +155,6 @@ if (isset($_POST['update'])) {
 
                 <div class="form-group">
                     <label><?php echo $texts[$lang]['current_photo_label']; ?></label>
-                    <!-- حافظت على نفس مسار الصورة في كودك -->
                     <img src="img/restaurants/<?php echo $data['image']; ?>" class="current-img-preview" onerror="this.src='img/default.jpg'">
                     <br>
                     <label><?php echo $texts[$lang]['change_photo_label']; ?></label>
@@ -173,7 +172,6 @@ if (isset($_POST['update'])) {
                     </div>
                 </div>
 
-                <!-- الأزرار السفلية بتنسيق متساوي (قدقد) -->
                 <div class="form-actions">
                     <button type="submit" name="update" class="btn-update">
                         <i class="fas fa-save"></i> <?php echo $texts[$lang]['btn_save_restaurant']; ?>

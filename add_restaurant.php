@@ -11,20 +11,23 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name_en = mysqli_real_escape_string($conn, $_POST['name_en']);
     $name_ar = mysqli_real_escape_string($conn, $_POST['name_ar']); 
-    $wilaya_id = $_POST['wilaya_id'];
+    // تم تصحيح المفتاح ليتوافق تماماً مع حقل السلكت في الأسفل دون تغيير المتغير
+    $wilaya_id = $_POST['wilaya_code']; 
     $lat = $_POST['lat'];
     $lng = $_POST['lng'];
 
     $image_path = ""; 
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-        $target_dir = "images/"; 
+        // التعديل الأساسي: المجلد الفعلي المخصص للمطاعم
+        $target_dir = "img/restaurants/"; 
         if (!is_dir($target_dir)) { mkdir($target_dir, 0777, true); }
         
         $file_name = "rest_" . time() . "_" . basename($_FILES["image"]["name"]);
         $target_file = $target_dir . $file_name;
         
         if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-            $image_path = "images/" . $file_name; 
+            // التعديل السحري: تخزين اسم الملف النظيف والصافي فقط في الـ Database
+            $image_path = $file_name; 
         }
     }
 
@@ -86,13 +89,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .btn-reset { background: #e2e8f0; color: #475569; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.3s; flex: 1; }
         .submit-btn:hover { background: #b08d4a; }
         
-        /* زر الرجوع الجديد بتنسيق بسيط */
         .back-link { margin-bottom: 15px; text-align: <?php echo ($lang == 'ar' ? 'right' : 'left'); ?>; }
         .back-link a { color: #64748b; text-decoration: none; font-weight: bold; font-size: 13px; }
 
         .flex-row { display: flex; gap: 15px; }
         .flex-row > div { flex: 1; }
-
     </style>
 </head>
 <body>
@@ -107,10 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="main-content">
         <div class="form-container">
             <div class="back-link">
-                <a href="manage_wilayas.php">
+                <a href="manage_restaurants.php">
                     <i class="fas <?php echo ($lang == 'ar' ? 'fa-arrow-right' : 'fa-arrow-left'); ?>"></i> 
                     <?php echo $texts[$lang]['back_to_mgmt_res']; ?>
-                </a> </div>
+                </a> 
+            </div>
             <div class="form-header">
                 <h2><?php echo $texts[$lang]['add_restaurant_title']; ?></h2>
             </div>

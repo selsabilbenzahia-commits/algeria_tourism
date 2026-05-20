@@ -88,12 +88,12 @@ for($i=1;$i<=5;$i++){
 }
 
 /* ================== SUGGESTIONS ================== */
-
+// قمنا بتحديث الاستعلام هنا ليجلب أيضاً حقل suggestion المكتوب نصاً
 $suggestions_query = mysqli_query($conn,"
-    SELECT selected_options, rating
+    SELECT selected_options, suggestion, rating
     FROM site_reviews
-    WHERE selected_options IS NOT NULL
-    AND selected_options != ''
+    WHERE (selected_options IS NOT NULL AND selected_options != '')
+    OR (suggestion IS NOT NULL AND suggestion != '')
     ORDER BY id DESC
     LIMIT 5
 ");
@@ -126,13 +126,7 @@ $admin_img =
 ? $admin_data['image']
 : 'https://ui-avatars.com/api/?name='.$admin_user.'&background=c5a059&color=fff';
 
-
-
-
-
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="<?php echo $lang; ?>" dir="<?php echo $dir; ?>">
@@ -173,10 +167,10 @@ min-height:100vh;
 /* ================= SIDEBAR ================= */
 
 .sidebar { width: 260px; height: 100vh; background: var(--dark); color: white; padding: 20px; position: fixed; <?php echo ($lang == 'ar') ? 'right: 0;' : 'left: 0;'; ?> }
-        .sidebar h2 { text-align: center; color: var(--gold); margin-bottom: 30px; border-bottom: 1px solid #334155; padding-bottom: 10px; font-size: 18px; }
+.sidebar h2 { text-align: center; color: var(--gold); margin-bottom: 30px; border-bottom: 1px solid #334155; padding-bottom: 10px; font-size: 18px; }
 .sidebar ul li { padding: 12px; border-radius: 8px; margin-bottom: 5px; }
-        .sidebar ul li a { color: white; text-decoration: none; display: flex; align-items: center; }
-        .sidebar ul li i { <?php echo ($lang == 'ar') ? 'margin-left: 10px;' : 'margin-right: 10px;'; ?> color: var(--gold); width: 20px; text-align: center; }
+.sidebar ul li a { color: white; text-decoration: none; display: flex; align-items: center; }
+.sidebar ul li i { <?php echo ($lang == 'ar') ? 'margin-left: 10px;' : 'margin-right: 10px;'; ?> color: var(--gold); width: 20px; text-align: center; }
 
 .admin-profile{
 text-align:center;
@@ -203,16 +197,10 @@ object-fit:cover;
 list-style:none;
 }
 
-
-
-
-
 /* ================= MAIN ================= */
 
 .main-content{
-
 <?php echo ($lang=='ar') ? 'margin-right:260px;' : 'margin-left:260px;'; ?>
-
 width:calc(100% - 260px);
 padding:30px;
 }
@@ -263,9 +251,7 @@ justify-content:center;
 .notif-dropdown{
 position:absolute;
 top:55px;
-
 <?php echo ($lang=='ar') ? 'left:0;' : 'right:0;'; ?>
-
 width:280px;
 background:white;
 border-radius:15px;
@@ -364,7 +350,6 @@ font-size:13px;
 
 .list-item i{
 color:var(--success);
-
 <?php echo ($lang=='ar') ? 'margin-left:10px;' : 'margin-right:10px;'; ?>
 }
 
@@ -444,50 +429,36 @@ justify-content:center;
 
 <body>
 
-<!-- ================= SIDEBAR ================= -->
-
 <div class="sidebar">
 
-<a href="admin_profile.php"
-style="text-decoration:none;color:white;">
-
+<a href="admin_profile.php" style="text-decoration:none;color:white;">
 <div class="admin-profile">
-
 <img src="<?php echo $admin_img; ?>" alt="Admin">
-
 <h4 style="margin-top:10px;font-size:14px;">
 <?php echo $_SESSION['admin']; ?>
 </h4>
-
 </div>
 </a>
 
 <ul>
-
 <li>
 <a href="admin_dashboard.php">
 <i class="fas fa-home"></i>
 <?php echo $texts[$lang]['home']; ?>
 </a>
 </li>
-
-
-            <li><a href="manage_wilayas.php"><i class="fas fa-map"></i> <?php echo $texts[$lang]['wilaya_mgmt']; ?></a></li>
-            <li><a href="manage_attractions.php"><i class="fas fa-camera"></i> <?php echo $texts[$lang]['attraction_mgmt']; ?></a></li>
-            <li><a href="manage_restaurants.php"><i class="fas fa-utensils"></i> <?php echo $texts[$lang]['restaurant_mgmt']; ?></a></li>
-            <li><a href="manage_hotels.php"><i class="fas fa-bed"></i> <?php echo $texts[$lang]['hotel_mgmt']; ?></a></li>
-            <li><a href="manage_comments.php"><i class="fas fa-comments"></i> <?php echo $texts[$lang]['comments']; ?></a></li>
-            <li style="margin-top: 20px; border-top: 1px solid #334155;"><a href="logout.php"><i class="fas fa-sign-out-alt"></i> <?php echo $texts[$lang]['logout']; ?></a></li>
-
+    <li><a href="manage_wilayas.php"><i class="fas fa-map"></i> <?php echo $texts[$lang]['wilaya_mgmt']; ?></a></li>
+    <li><a href="manage_attractions.php"><i class="fas fa-camera"></i> <?php echo $texts[$lang]['attraction_mgmt']; ?></a></li>
+    <li><a href="manage_restaurants.php"><i class="fas fa-utensils"></i> <?php echo $texts[$lang]['restaurant_mgmt']; ?></a></li>
+    <li><a href="manage_hotels.php"><i class="fas fa-bed"></i> <?php echo $texts[$lang]['hotel_mgmt']; ?></a></li>
+    <li><a href="manage_comments.php"><i class="fas fa-comments"></i> <?php echo $texts[$lang]['comments']; ?></a></li>
+    <li style="margin-top: 20px; border-top: 1px solid #334155;"><a href="logout.php"><i class="fas fa-sign-out-alt"></i> <?php echo $texts[$lang]['logout']; ?></a></li>
 </ul>
 </div>
-
-<!-- ================= MAIN ================= -->
 
 <div class="main-content">
 
 <div class="top-header">
-
 <h2>
 <?php echo $texts[$lang]['welcome']; ?>
 <?php echo $_SESSION['admin']; ?> 👋
@@ -496,33 +467,22 @@ style="text-decoration:none;color:white;">
 <div style="display:flex;align-items:center;gap:15px;">
 
 <div class="notif-box">
-
 <button class="notif-btn" onclick="toggleNotif()">
-
 <i class="fas fa-bell"></i>
-
 <?php if($notif_count > 0): ?>
-
 <span class="notif-count">
 <?php echo $notif_count; ?>
 </span>
-
 <?php endif; ?>
-
 </button>
 
 <div class="notif-dropdown" id="notifDropdown">
-
 <?php while($n = mysqli_fetch_assoc($notif_query)): ?>
-
 <div class="notif-item">
 <?php echo $n['message']; ?>
 </div>
-
 <?php endwhile; ?>
-
 </div>
-
 </div>
 
 <span style="color:var(--gold);font-weight:bold;">
@@ -531,8 +491,6 @@ style="text-decoration:none;color:white;">
 
 </div>
 </div>
-
-<!-- ================= STATS ================= -->
 
 <div class="stats-grid">
 
@@ -566,201 +524,126 @@ style="text-decoration:none;color:white;">
 <p><?php echo $count_comments; ?></p>
 </a>
 
-<a href="manage_users.php"
-class="stat-card"
-style="border-top-color:var(--accent);">
-
+<a href="manage_users.php" class="stat-card" style="border-top-color:var(--accent);">
 <i class="fas fa-users"></i>
 <h3><?php echo $texts[$lang]['users']; ?></h3>
 <p><?php echo $count_users; ?></p>
-
 </a>
 
 </div>
 
-<!-- ================= ROW 1 ================= -->
-
 <div class="dashboard-row">
 
 <div class="content-box">
-
 <h3>
-<i class="fas fa-plus-circle"
-style="color:var(--success);"></i>
-
+<i class="fas fa-plus-circle" style="color:var(--success);"></i>
 <?php echo $texts[$lang]['latest_additions']; ?>
 </h3>
-
 <?php while($row = mysqli_fetch_assoc($latest_query)): ?>
-
 <div class="list-item">
-
 <i class="fas fa-check-circle"></i>
-
-<?php echo ($lang=='ar')
-? $row['name_ar']
-: $row['name_en']; ?>
-
+<?php echo ($lang=='ar') ? $row['name_ar'] : $row['name_en']; ?>
 </div>
-
 <?php endwhile; ?>
-
 </div>
 
 <div class="content-box">
-
 <h3>
-<i class="fas fa-chart-pie"
-style="color:var(--gold);"></i>
-
+<i class="fas fa-chart-pie" style="color:var(--gold);"></i>
 <?php echo $texts[$lang]['attractions_by_type']; ?>
 </h3>
-
 <div class="chart-wrapper">
 <canvas id="typeChart"></canvas>
 </div>
-
 </div>
 
 <div class="content-box">
-
 <h3>
-<i class="fas fa-fire"
-style="color:#f97316;"></i>
-
+<i class="fas fa-fire" style="color:#f97316;"></i>
 <?php echo $texts[$lang]['top_commented']; ?>
 </h3>
-
 <?php while($top = mysqli_fetch_assoc($top_commented_query)): ?>
-
 <div class="list-item">
-
-<i class="fas fa-star"
-style="color:#f97316;"></i>
-
-<?php echo ($lang=='ar')
-? $top['name_ar']
-: $top['name_en']; ?>
-
+<i class="fas fa-star" style="color:#f97316;"></i>
+<?php echo ($lang=='ar') ? $top['name_ar'] : $top['name_en']; ?>
 (<?php echo $top['comment_count']; ?>)
-
 </div>
-
 <?php endwhile; ?>
-
 </div>
 
 </div>
-
-<!-- ================= ROW 2 ================= -->
-
-<!-- ===================== NEW MODERN SECTION ===================== -->
 
 <?php
 // Ratings Count
 $five_star = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM site_reviews WHERE rating = 5"))['total'];
-
 $four_star = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM site_reviews WHERE rating = 4"))['total'];
-
 $three_star = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM site_reviews WHERE rating = 3"))['total'];
-
 $two_star = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM site_reviews WHERE rating = 2"))['total'];
-
 $one_star = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM site_reviews WHERE rating = 1"))['total'];
-
-
-// Latest Suggestions
-$suggestions_query = mysqli_query($conn,"
-    SELECT selected_options, rating
-    FROM site_reviews
-    WHERE selected_options IS NOT NULL
-    AND selected_options != ''
-    ORDER BY id DESC
-    LIMIT 5
-");
 ?>
-
-
 
 <div class="dashboard-row modern-admin-row">
 
-    <!-- Rating Analytics -->
-    <div class="content-box modern-chart-box"> <h3> <i class="fas fa-chart-column" style="color:#f59e0b;"></i>
-     <?php echo $texts[$lang]['rating_analytics']; ?> </h3> <div class="modern-chart-wrapper"> 
-        <canvas id="ratingChart"></canvas> </div> <div class="rating-summary"> <div class="rate-card">
-             <span>⭐ 5</span> <strong><?php echo $five_star; ?></strong> </div>
-              <div class="rate-card">
-                 <span>⭐ 4</span> 
-              <strong><?php echo $four_star; ?></strong> 
-            </div>
-               <div class="rate-card"> <span>⭐ 3</span>
-                <strong><?php echo $three_star; ?></strong>
-             </div> 
-             <div class="rate-card"> <span>⭐ 2</span>
-              <strong><?php echo $two_star; ?></strong> 
-            </div> 
-            <div class="rate-card"> <span>⭐ 1</span> 
-            <strong>
-                <?php echo $one_star; ?></strong> 
-            </div> 
+    <div class="content-box modern-chart-box"> 
+        <h3> <i class="fas fa-chart-column" style="color:#f59e0b;"></i> <?php echo $texts[$lang]['rating_analytics']; ?> </h3> 
+        <div class="modern-chart-wrapper"> <canvas id="ratingChart"></canvas> </div> 
+        <div class="rating-summary"> 
+            <div class="rate-card"><span>⭐ 5</span> <strong><?php echo $five_star; ?></strong> </div>
+            <div class="rate-card"><span>⭐ 4</span> <strong><?php echo $four_star; ?></strong> </div>
+            <div class="rate-card"><span>⭐ 3</span> <strong><?php echo $three_star; ?></strong></div> 
+            <div class="rate-card"><span>⭐ 2</span> <strong><?php echo $two_star; ?></strong> </div> 
+            <div class="rate-card"><span>⭐ 1</span> <strong><?php echo $one_star; ?></strong> </div> 
         </div> 
     </div>
 
-    <!-- Suggestions -->
     <div class="content-box modern-suggestions">
-
         <h3>
             <i class="fas fa-lightbulb" style="color:#3b82f6;"></i>
             <?php echo $texts[$lang]['latest_suggestions']; ?>
         </h3>
 
         <div class="suggestions-box">
-
             <?php while($sug = mysqli_fetch_assoc($suggestions_query)): ?>
-
                 <div class="suggestion-item">
-
                     <div class="suggestion-icon">
                         <i class="fas fa-comment-dots"></i>
                     </div>
 
-                    <div class="suggestion-content">
+                    <div class="suggestion-content" style="width: 100%;">
+                        <?php if(!empty($sug['selected_options'])): ?>
+                            <p style="font-weight: bold; margin-bottom: 2px;">
+                               <?php
+                                $options = str_replace(",", " • ", $sug['selected_options']);
+                                echo htmlspecialchars($options);
+                               ?>
+                            </p>
+                        <?php endif; ?>
 
-                        <p>
-                           <?php
-$options = str_replace(",", " • ", $sug['selected_options']);
-echo htmlspecialchars($options);
-?>
-                        </p>
+                        <?php if(!empty($sug['suggestion'])): ?>
+                            <p style="background: rgba(59, 130, 246, 0.05); padding: 6px 10px; border-radius: 6px; font-size: 12px; color: #475569; margin: 4px 0; border-inline-start: 2px solid #3b82f6;">
+                                <i class="fas fa-quote-<?php echo ($lang == 'ar') ? 'right' : 'left'; ?>" style="font-size: 10px; color: #3b82f6; opacity: 0.5;"></i> 
+                                <?php echo htmlspecialchars($sug['suggestion']); ?>
+                            </p>
+                        <?php endif; ?>
 
                         <small>
-                            ⭐ <?php echo $sug['rating']; ?>/5
+                             ⭐ <?php echo $sug['rating']; ?>/5
                         </small>
-
                     </div>
-
                 </div>
-
             <?php endwhile; ?>
-
         </div>
-
     </div>
 
 </div>
 
-
-
-<!-- QUICK ACTIONS -->
 <div class="content-box quick-actions-modern">
-
     <h3>
         <i class="fas fa-bolt" style="color:#eab308;"></i>
         <?php echo $texts[$lang]['quick_actions']; ?>
     </h3>
 
     <div class="quick-grid-modern">
-
         <a href="add_wilaya.php" class="quick-btn-modern">
             <i class="fas fa-map"></i>
             <span><?php echo $texts[$lang]['add_wilaya']; ?></span>
@@ -785,16 +668,10 @@ echo htmlspecialchars($options);
             <i class="fas fa-external-link-alt"></i>
             <span><?php echo $texts[$lang]['view_site']; ?></span>
         </a>
-
     </div>
-
 </div>
 
-
-<!-- ===================== CSS ===================== -->
-
 <style>
-
 .modern-admin-row{
     display:grid;
     grid-template-columns:2fr 1fr;
@@ -849,10 +726,7 @@ echo htmlspecialchars($options);
     font-weight:800;
 }
 
-
-
 /* Suggestions */
-
 .modern-suggestions{
     max-height:500px;
     overflow:hidden;
@@ -898,10 +772,7 @@ echo htmlspecialchars($options);
     font-weight:700;
 }
 
-
-
 /* QUICK ACTIONS */
-
 .quick-actions-modern{
     margin-top:20px;
 }
@@ -970,51 +841,24 @@ echo htmlspecialchars($options);
     color:white;
 }
 
-
-
-
-/* ===== Modern Rating Bars ===== */
-
-/* ===== MODERN RATING BOX ===== */
-
-
-
-
-
 /* RESPONSIVE */
-
 @media(max-width:1000px){
-
     .modern-admin-row{
         grid-template-columns:1fr;
     }
-
     .quick-grid-modern{
         grid-template-columns:repeat(2,1fr);
     }
-
 }
-
 </style>
 
-
-
-<!-- ===================== CHART JS ===================== -->
-
 <script>
-
 new Chart(document.getElementById('ratingChart'), {
-
     type: 'bar',
-
     data: {
-
         labels: ['5⭐', '4⭐', '3⭐', '2⭐', '1⭐'],
-
         datasets: [{
-
             label: 'Ratings',
-
             data: [
                 <?php echo $five_star; ?>,
                 <?php echo $four_star; ?>,
@@ -1022,7 +866,6 @@ new Chart(document.getElementById('ratingChart'), {
                 <?php echo $two_star; ?>,
                 <?php echo $one_star; ?>
             ],
-
             backgroundColor: [
                 '#10b981',
                 '#3b82f6',
@@ -1030,75 +873,52 @@ new Chart(document.getElementById('ratingChart'), {
                 '#fb7185',
                 '#ef4444'
             ],
-
             borderRadius:10,
             barThickness:40
-
         }]
     },
-
     options: {
-
         responsive:true,
         maintainAspectRatio:false,
-
         plugins:{
             legend:{
                 display:false
             }
         },
-
         scales:{
-
             y:{
                 beginAtZero:true,
                 grid:{
                     display:false
                 }
             },
-
             x:{
                 grid:{
                     display:false
                 }
             }
-
         }
-
     }
-
 });
-
 </script>
 
 <script>
-
 function toggleNotif(){
-
-const box = document.getElementById('notifDropdown');
-
-if(box.style.display === 'block'){
-box.style.display = 'none';
-}else{
-box.style.display = 'block';
-}
-
+    const box = document.getElementById('notifDropdown');
+    if(box.style.display === 'block'){
+        box.style.display = 'none';
+    }else{
+        box.style.display = 'block';
+    }
 }
 
 /* ================= PIE ================= */
-
 new Chart(document.getElementById('typeChart'), {
-
 type:'doughnut',
-
 data:{
-
 labels: <?php echo json_encode($type_labels); ?>,
-
 datasets:[{
-
 data: <?php echo json_encode($type_counts); ?>,
-
 backgroundColor:[
 '#c5a059',
 '#3b82f6',
@@ -1106,14 +926,10 @@ backgroundColor:[
 '#10b981',
 '#f59e0b'
 ]
-
 }]
 },
-
 options:{
-
 maintainAspectRatio:false,
-
 plugins:{
 legend:{
 position:'bottom',
@@ -1123,11 +939,8 @@ font:{size:10}
 }
 }
 }
-
 }
-
 });
-
 </script>
 
 </body>

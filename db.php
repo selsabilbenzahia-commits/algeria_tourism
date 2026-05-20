@@ -11,5 +11,6 @@ if (!$conn) {
 }
 mysqli_query($conn, "SET session sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
 
+// لضمان دعم اللغة العربية بشكل صحيح 100%
 mysqli_set_charset($conn, "utf8mb4");
 ?>

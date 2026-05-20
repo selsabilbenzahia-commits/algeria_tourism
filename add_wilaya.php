@@ -8,6 +8,22 @@ if (!isset($_SESSION['admin'])) { header("Location: login.php"); exit(); }
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en';
 $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 
+// --- التعديل الثاني: ميزة الحذف الآمن دون المساس بأسطر الولايات الجزائرية الثابتة ---
+if (isset($_GET['delete'])) {
+    $delete_code = mysqli_real_escape_string($conn, $_GET['delete']);
+    
+    // نقوم بتفريغ البيانات والصورة (جعلها NULL وفارغة) لتبقى الولاية واسمها محفوظين في الـ BDD
+    $sql_delete = "UPDATE wilayas SET description_ar = NULL, description_en = NULL, 
+                   image = NULL, lat = NULL, lng = NULL WHERE code = '$delete_code'";
+                   
+    if (mysqli_query($conn, $sql_delete)) {
+        echo "<script>alert('".$texts[$lang]['success_delete']."'); window.location='manage_wilayas.php';</script>";
+        exit();
+    } else {
+        echo "Error: " . mysqli_error($conn);
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $code = $_POST['wilaya_code'];
     $desc_ar = mysqli_real_escape_string($conn, $_POST['description_ar']);
@@ -17,12 +33,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $image_db_path = ""; 
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-        $target_dir = "images/"; 
+        // التعديل الأول: المجلد الفعلي المخصص للولايات بحسب هيكلتك الجديدة
+        $target_dir = "img/wilayas/"; 
         if (!is_dir($target_dir)) { mkdir($target_dir, 0777, true); }
         $file_name = time() . "_" . basename($_FILES["image"]["name"]);
         $target_file = $target_dir . $file_name;
+        
         if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-            $image_db_path = "images/" . $file_name; 
+            // تخزين اسم الصورة النظيف واللازم فقط داخل قاعدة البيانات مرونة تامة
+            $image_db_path = $file_name; 
         }
     }
 
@@ -87,7 +106,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .btn-reset { background: #e2e8f0; color: #475569; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.3s; flex: 1; }
         .submit-btn:hover { background: #b08d4a; }
         
-        /* زر الرجوع الجديد بتنسيق بسيط */
         .back-link { margin-bottom: 15px; text-align: <?php echo ($lang == 'ar' ? 'right' : 'left'); ?>; }
         .back-link a { color: #64748b; text-decoration: none; font-weight: bold; font-size: 13px; }
 
@@ -168,9 +186,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <button type="submit" class="submit-btn"><?php echo $texts[$lang]['btn_update']; ?></button>
                     <button type="reset" class="btn-reset"><?php echo $texts[$lang]['btn_reset']; ?></button>
                 </div>
-            </form>
-        </div>
-    </div>
             </form>
         </div>
     </div>

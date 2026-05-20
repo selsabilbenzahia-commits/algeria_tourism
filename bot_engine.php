@@ -36,7 +36,7 @@ if ($wilaya) {
     $response['reply'] = "<strong>$name:</strong> $desc";
 
     // جلب أهم المعالم (Attractions) لهذه الولاية
-    $st2 = $pdo->prepare("SELECT name_ar, name_en FROM attractions WHERE wilaya_id = ? LIMIT 3");
+    $st2 = $pdo->prepare("SELECT name_ar, name_en FROM attractions WHERE wilaya_id = ? LIMIT 5");
     $st2->execute([$w_id]);
     while($row = $st2->fetch()) {
         $response['suggestions'][] = ($lang == 'ar') ? $row['name_ar'] : $row['name_en'];

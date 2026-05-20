@@ -13,7 +13,7 @@ $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en';
 $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 
 $id = intval($_GET['id']);
-// جلب بيانات الفندق الحالية (أضفت name_ar)
+// جلب بيانات الفندق الحالية
 $res = mysqli_query($conn, "SELECT * FROM hotels WHERE id = $id");
 $data = mysqli_fetch_assoc($res);
 
@@ -22,27 +22,30 @@ $wilayas = mysqli_query($conn, "SELECT * FROM wilayas");
 
 if (isset($_POST['update'])) {
     $name = mysqli_real_escape_string($conn, $_POST['name_en']);
-    $name_ar = mysqli_real_escape_string($conn, $_POST['name_ar']); // الحقل الجديد
+    $name_ar = mysqli_real_escape_string($conn, $_POST['name_ar']); 
     $wilaya_id = $_POST['wilaya_id'];
-    $price = $_POST['price_per_night']; // حقل السعر (كودك الأصلي)
     $lat = $_POST['lat'];
     $lng = $_POST['lng'];
     
-    // منطق الصورة (كودك الأصلي كما هو)
+    // منطق الصورة الذكي (حفظ الاسم الصافي داخل المجلد المنظم)
     if (!empty($_FILES['image']['name'])) {
-        $image_name = time() . '_' . $_FILES['image']['name'];
-        $target_path = "images/" . $image_name; 
+        $image_name = time() . '_' . basename($_FILES['image']['name']);
+        $target_path = "img/hotels/" . $image_name; 
+        
         if (move_uploaded_file($_FILES['image']['tmp_name'], $target_path)) {
-            $final_image = $target_path;
-        } else { $final_image = $data['image']; }
-    } else { $final_image = $data['image']; }
+            $final_image = $image_name; 
+        } else { 
+            $final_image = $data['image']; 
+        }
+    } else { 
+        $final_image = $data['image']; 
+    }
 
-    // التحديث مع إضافة name_ar
+    // التحديث بعد حذف حقل السعر تماماً من الاستعلام
     $sql = "UPDATE hotels SET 
             name_en='$name', 
             name_ar='$name_ar', 
             wilaya_id='$wilaya_id', 
-            price_per_night='$price', 
             lat='$lat', 
             lng='$lng', 
             image='$final_image' 
@@ -85,8 +88,12 @@ if (isset($_POST['update'])) {
         .btn-back { color: #64748b; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 15px; }
         .btn-back:hover { color: var(--gold); }
 
-        .form-container h1 { font-size: 24px; color: var(--dark); margin-bottom: 30px; text-align: center; border-bottom: 2px solid var(--gold); display: inline-block; padding-bottom: 5px; width: 100%; }
         
+        
+         .form-container h1 { font-size: 26px; color: var(--dark); margin-bottom: 35px; text-align: center; position: relative; padding-bottom: 12px; }
+          .form-container h1::after { content: ''; width: 60px; height: 4px; background: var(--gold); position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); border-radius: 2px; }
+
+
         .form-group { margin-bottom: 20px; text-align: <?php echo ($lang == 'ar' ? 'right' : 'left'); ?>; }
         label { display: block; margin-bottom: 8px; font-weight: bold; color: #475569; }
         input[type="text"], select, input[type="file"], input[type="number"] { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; }
@@ -118,7 +125,6 @@ if (isset($_POST['update'])) {
 
     <div class="main-content">
         <div class="form-container">
-            <!-- زر الرجوع -->
             <div class="back-nav">
                 <a href="manage_hotels.php" class="btn-back">
                     <i class="fas <?php echo ($lang == 'ar' ? 'fa-arrow-right' : 'fa-arrow-left'); ?>"></i>
@@ -154,11 +160,6 @@ if (isset($_POST['update'])) {
                 </div>
 
                 <div class="form-group">
-                    <label><?php echo $texts[$lang]['price_label']; ?></label>
-                    <input type="number" name="price_per_night" value="<?php echo $data['price_per_night']; ?>" required>
-                </div>
-
-                <div class="form-group">
                     <label><?php echo $texts[$lang]['current_photo_label']; ?></label>
                     <img src="img/hotels/<?php echo $data['image']; ?>" class="current-img-preview" onerror="this.src='img/default_hotel.jpg'">
                     <br>
@@ -177,7 +178,6 @@ if (isset($_POST['update'])) {
                     </div>
                 </div>
 
-                <!-- الأزرار السفلية بتنسيق متساوي (قدقد) -->
                 <div class="form-actions">
                     <button type="submit" name="update" class="btn-update">
                         <i class="fas fa-save"></i> <?php echo $texts[$lang]['btn_save_hotel']; ?>

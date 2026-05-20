@@ -106,6 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <div class="login-wrapper">
     <div class="form-section">
+        <!-- زر الرجوع للصفحة الرئيسية -->
         <a href="index.php" class="back-home">
             <i class="fas <?php echo ($lang == 'ar') ? 'fa-arrow-right' : 'fa-arrow-left'; ?>"></i>
             <?php echo ($lang == 'ar') ? 'العودة للرئيسية' : 'Back to Home'; ?>
@@ -129,8 +130,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label><?php echo ($lang == 'ar') ? 'كلمة المرور' : 'Password'; ?></label>
                     <input type="password" name="password" id="myPass" placeholder="••••••••" required>
                     <i class="far fa-eye toggle-password" onclick="showPass()"></i>
-                    <a href="forgot_password.php" style="float:<?php echo ($lang == 'ar') ? 'left' : 'right'; ?>;
-                     font-size:12px; color:#c5a059; text-decoration:none; margin-top:5px; font-weight:700;">
+                    <a href="forgot_password.php" style="float:<?php echo ($lang == 'ar') ? 'left' : 'right'; ?>; font-size:12px; color:#c5a059; text-decoration:none; margin-top:5px; font-weight:700;">
                         <?php echo ($lang == 'ar') ? 'هل نسيت كلمة السر؟' : 'Forgot password?'; ?>
                     </a>
                 </div>

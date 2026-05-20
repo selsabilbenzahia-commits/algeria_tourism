@@ -11,7 +11,9 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name_ar = mysqli_real_escape_string($conn, $_POST['name_ar']);
     $name_en = mysqli_real_escape_string($conn, $_POST['name_en']);
-    $wilaya_id = $_POST['wilaya_id'];
+    
+    // تصحيح الاستقبال: استقبلنا الحقل المختار من الـ Select مباشرة
+    $wilaya_id = intval($_POST['wilaya_id']); 
     $cat_id = $_POST['category_id'];
     $lat = $_POST['lat'];
     $lng = $_POST['lng'];
@@ -25,14 +27,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $attraction_id = mysqli_insert_id($conn); 
 
         if (isset($_FILES['images'])) {
-            $target_dir = "images/";
+            // المجلد الذي يتم رفع الملفات إليه ماديًا في السيرفر
+            $target_dir = "img/attractions/"; 
+            
             foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
                 if ($_FILES['images']['error'][$key] == 0) {
+                    
+                    // توليد اسم الصورة الفريد الخاص بكِ
                     $file_name = "attr_" . $attraction_id . "_" . time() . "_" . $key . "_" . basename($_FILES["images"]["name"][$key]);
                     $target_file = $target_dir . $file_name;
                     
+                    // رفع الملف ماديًا إلى المجلد
                     if (move_uploaded_file($tmp_name, $target_file)) {
-                        $db_path = "images/" . $file_name;
+                        
+                        // التعديل السحري: نخزن اسم الملف فقط ($file_name) في قاعدة البيانات بدون أي مسارات
+                        $db_path = $file_name; 
+                        
                         mysqli_query($conn, "INSERT INTO attraction_images (attraction_id, image) VALUES ('$attraction_id', '$db_path')");
                     }
                 }
@@ -94,13 +104,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .btn-reset { background: #e2e8f0; color: #475569; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.3s; flex: 1; }
         .submit-btn:hover { background: #b08d4a; }
         
-        /* زر الرجوع الجديد بتنسيق بسيط */
         .back-link { margin-bottom: 15px; text-align: <?php echo ($lang == 'ar' ? 'right' : 'left'); ?>; }
         .back-link a { color: #64748b; text-decoration: none; font-weight: bold; font-size: 13px; }
 
         .flex-row { display: flex; gap: 15px; }
         .flex-row > div { flex: 1; }
-
     </style>
 </head>
 <body>
@@ -115,10 +123,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="main-content">
         <div class="form-container">
             <div class="back-link">
-                <a href="manage_wilayas.php">
+                <a href="manage_attractions.php">
                     <i class="fas <?php echo ($lang == 'ar' ? 'fa-arrow-right' : 'fa-arrow-left'); ?>"></i> 
                     <?php echo $texts[$lang]['back_to_mgmt_att']; ?>
-                </a> </div>
+                </a> 
+            </div>
             <div class="form-header">
                 <h2><?php echo $texts[$lang]['add_attraction_title']; ?></h2>
             </div>
@@ -138,16 +147,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="flex-row">
                     <div class="form-group">
                         <label><?php echo $texts[$lang]['col_wilaya']; ?></label>
-                        <select name="wilaya_code" required>
-                        <option value=""><?php echo ($lang == 'ar') ? '-- اختر --' : '-- Choose --'; ?></option>
-                        <?php
-                        $res = mysqli_query($conn, "SELECT code, name_en, name_ar FROM wilayas ORDER BY code ASC");
-                        while($row = mysqli_fetch_assoc($res)) {
-                            $name = ($lang == 'ar') ? $row['name_ar'] : $row['name_en'];
-                            echo "<option value='".$row['code']."'>".$row['code']." - ".$name."</option>";
-                        }
-                        ?>
-                    </select>
+                        <select name="wilaya_id" required>
+                            <option value=""><?php echo ($lang == 'ar') ? '-- اختر --' : '-- Choose --'; ?></option>
+                            <?php
+                            // تصحيح الاستعلام: يجلب فقط الولايات التي تحتوي على بيانات وصورة معتمدة في موقعك
+                            $res = mysqli_query($conn, "SELECT id, code, name_en, name_ar FROM wilayas WHERE image IS NOT NULL AND image != '' ORDER BY code ASC");
+                            while($row = mysqli_fetch_assoc($res)) {
+                                $name = ($lang == 'ar') ? $row['name_ar'] : $row['name_en'];
+                                // تمرير الـ id في الـ value لكي ينجح الربط البرمجي
+                                echo "<option value='".$row['id']."'>".$row['code']." - ".$name."</option>";
+                            }
+                            ?>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label><?php echo $texts[$lang]['col_category']; ?></label>
@@ -196,7 +207,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                 </div>
 
-                
                 <div class="form-actions">
                     <button type="submit" class="submit-btn"><?php echo $texts[$lang]['btn_update']; ?></button>
                     <button type="reset" class="btn-reset"><?php echo $texts[$lang]['btn_reset']; ?></button>

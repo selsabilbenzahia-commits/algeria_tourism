@@ -9,12 +9,19 @@ if (!isset($_SESSION['admin'])) { header("Location: login.php"); exit(); }
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en';
 $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 
+// --- التعديل المطلب: تحويل الحذف التدميري إلى حذف آمن يحفظ أسطر الولايات الجزائرية ---
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
-    mysqli_query($conn, "DELETE FROM wilayas WHERE id = $id");
+    
+    // بدلاً من مسح السطر، نقوم بتفريغ البيانات والصور فقط لتبقى هيكلة الولايات ثابتة في الـ BDD
+    $sql_safe_delete = "UPDATE wilayas SET description_ar = NULL, description_en = NULL, 
+                        image = NULL, lat = NULL, lng = NULL WHERE id = $id";
+                        
+    mysqli_query($conn, $sql_safe_delete);
     header("Location: manage_wilayas.php");
     exit();
 }
+
 // استبدل السطر القديم بهذا الشرط
 $query = "SELECT * FROM wilayas WHERE image IS NOT NULL AND image != '' AND lat IS NOT NULL";
 $result = mysqli_query($conn, $query);

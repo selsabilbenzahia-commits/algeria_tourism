@@ -103,6 +103,8 @@ $texts = [
         'success_update' => 'Updated Successfully!',
 
         'add_attraction_title' => 'Add New Attraction',
+        'wilaya_id' => 'wilaya ' ,
+        'category_id' => 'Category',
         'name_ar' => 'Name (Arabic)',
         'name_en' => 'Name (English)',
         'col_category' => 'Category',
@@ -204,7 +206,7 @@ $texts = [
 'add_restaurant' => 'Add Restaurant',
 
 
-'ai_assistant' => 'AI Smart Assistant',
+'ai_assistant' => ' Smart Explorer',
 'searching_location' => 'Locating you...',
 'nearby_places' => 'Location Found!',
 'location_success' => 'We found your location. The map will now guide you to nearby landmarks.',
@@ -249,6 +251,23 @@ $texts = [
 
 'site_ratings' => 'Site Ratings',
 'user_suggestions' => 'User Suggestions',
+
+'att_title' => 'Discover the Enchanting Landmarks of Algeria',
+'unesco_title' => 'UNESCO World Heritage Sites in Algeria 🏛️',
+'explore_att' => 'Explore Landmark',
+'filter_all' => 'All 🌍',
+
+'rating_analytics' => 'Website Rating Analytics',
+'latest_suggestions' => 'Latest User Suggestions',
+
+'edit_profile' => 'Edit Profile',
+    'back_to_dashboard' => 'Back to Dashboard',
+    'current_username' => 'Current Username',
+    'new_password_hint' => 'New Password (leave empty to keep current)',
+    'current_profile_photo' => 'Current Profile Photo',
+    'change_profile_photo' => 'Change Profile Photo',
+    'success_update_profile' => 'Profile updated successfully!',
+    
     ],
 
     'ar' => [
@@ -450,7 +469,7 @@ $texts = [
 'add_restaurant' => 'إضافة مطعم',
 
 
-'ai_assistant' => 'المساعد الذكي',
+'ai_assistant' => 'الاكتشاف الذكي',
 'searching_location' => 'جاري تحديد موقعك...',
 'nearby_places' => 'اكتشفنا موقعك!',
 'location_success' => 'تم تحديد موقعك بنجاح. الخريطة ستوجهك الآن لأقرب المعالم.',
@@ -495,6 +514,25 @@ $texts = [
 
 'site_ratings' => 'تقييمات الموقع',
 'user_suggestions' => 'اقتراحات المستخدمين',
+
+
+'att_title' => 'اكتشف معالم الجزائر الساحرة',
+'unesco_title' => 'معالم اليونسكو العالمية في الجزائر 🏛️',
+'explore_att' => 'استكشف المعلم',
+'filter_all' => 'الكل 🌍',
+
+'rating_analytics' => 'تحليلات تقييمات الموقع',
+'latest_suggestions' => 'آخر اقتراحات المستخدمين',
+
+
+'edit_profile' => 'تعديل الملف الشخصي',
+    'back_to_dashboard' => 'العودة للوحة التحكم',
+    'current_username' => 'اسم المستخدم الحالي',
+    'new_password_hint' => 'كلمة المرور الجديدة (اتركها فارغة للمحافظة على الحالية)',
+    'current_profile_photo' => 'الصورة الشخصية الحالية',
+    'change_profile_photo' => 'تغيير الصورة الشخصية',
+    'success_update_profile' => 'تم تحديث الملف الشخصي بنجاح!',
+
 ],
 
 ];

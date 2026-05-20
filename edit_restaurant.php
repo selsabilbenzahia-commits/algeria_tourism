@@ -142,14 +142,16 @@ if (isset($_POST['update'])) {
                 </div>
 
                 <div class="form-group">
-                    <label><?php echo $texts[$lang]['col_wilaya']; ?></label>
-                    <select name="wilaya_id" required>
-                        <?php while($w = mysqli_fetch_assoc($wilayas)): ?>
-                            <?php $w_name = ($lang == 'ar') ? $w['name_ar'] : $w['name_en']; ?>
-                            <option value="<?php echo $w['id']; ?>" <?php if($w['id'] == $data['wilaya_id']) echo 'selected'; ?>>
-                                <?php echo $w_name; ?>
-                            </option>
-                        <?php endwhile; ?>
+                    <label><?php echo $texts[$lang]['select_wilaya']; ?></label>
+                    <select name="wilaya_code" required>
+                        <option value=""><?php echo ($lang == 'ar') ? '-- اختر --' : '-- Choose --'; ?></option>
+                        <?php
+                        $res = mysqli_query($conn, "SELECT code, name_en, name_ar FROM wilayas ORDER BY code ASC");
+                        while($row = mysqli_fetch_assoc($res)) {
+                            $name = ($lang == 'ar') ? $row['name_ar'] : $row['name_en'];
+                            echo "<option value='".$row['code']."'>".$row['code']." - ".$name."</option>";
+                        }
+                        ?>
                     </select>
                 </div>
 

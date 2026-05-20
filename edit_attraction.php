@@ -144,17 +144,19 @@ if (isset($_POST['update'])) {
                         <input type="text" name="name_ar" value="<?= htmlspecialchars($data['name_ar']) ?>" required>
                     </div>
 
-                    <div class="form-group full-row">
-                        <label><?= $texts[$lang]['col_wilaya'] ?></label>
-                        <select name="wilaya_id">
-                            <?php while($w = mysqli_fetch_assoc($wilayas)): ?>
-                                <?php $w_name = ($lang == 'ar') ? $w['name_ar'] : $w['name_en']; ?>
-                                <option value="<?= $w['id'] ?>" <?= ($w['id'] == $data['wilaya_id']) ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($w_name) ?>
-                                </option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
+                    <div class="form-group">
+                    <label><?php echo $texts[$lang]['select_wilaya']; ?></label>
+                    <select name="wilaya_code" required>
+                        <option value=""><?php echo ($lang == 'ar') ? '-- اختر --' : '-- Choose --'; ?></option>
+                        <?php
+                        $res = mysqli_query($conn, "SELECT code, name_en, name_ar FROM wilayas ORDER BY code ASC");
+                        while($row = mysqli_fetch_assoc($res)) {
+                            $name = ($lang == 'ar') ? $row['name_ar'] : $row['name_en'];
+                            echo "<option value='".$row['code']."'>".$row['code']." - ".$name."</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
 
                     <div class="form-group full-row">
                         <label><?= $texts[$lang]['current_photo_label'] ?></label>

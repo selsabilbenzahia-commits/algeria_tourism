@@ -13,9 +13,27 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     
-    // بدلاً من مسح السطر، نقوم بتفريغ البيانات والصور فقط لتبقى هيكلة الولايات ثابتة في الـ BDD
-    $sql_safe_delete = "UPDATE wilayas SET description_ar = NULL, description_en = NULL, 
-                        image = NULL, lat = NULL, lng = NULL WHERE id = $id";
+    // --- التعديل المصلح: تحويل الحذف التدميري إلى حذف آمن بتفريغ النصوص والصور بدون NULL ---
+if (isset($_GET['delete'])) {
+    $id = intval($_GET['delete']);
+    
+    // نضع '' للحقول النصية، ونضع 0 لحقول الأرقام العشريّة (lat و lng) لحماية الـ BDD
+    $sql_safe_delete = "UPDATE wilayas SET 
+                        description_ar = '', 
+                        description_en = '', 
+                        image = '', 
+                        lat = 0, 
+                        lng = 0 
+                        WHERE id = $id";
+                        
+    // هنا يأتي السطر 20 الخاص بك لتنفيذ الاستعلام
+    if (mysqli_query($conn, $sql_safe_delete)) {
+        header("Location: manage_wilayas.php?success=1");
+        exit();
+    } else {
+        echo "Error: " . mysqli_error($conn);
+    }
+}
                         
     mysqli_query($conn, $sql_safe_delete);
     header("Location: manage_wilayas.php");

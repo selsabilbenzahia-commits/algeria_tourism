@@ -1,7 +1,7 @@
 <?php
 session_start();
-session_unset(); // يمسح كل متغيرات الجلسة
-session_destroy(); // يدمر الجلسة تماماً
-header("Location: index.php"); // يعيده للرئيسية ليرى زر "تسجيل الدخول" مجدداً
+session_unset(); 
+session_destroy();
+header("Location: index.php");
 exit();
 ?>

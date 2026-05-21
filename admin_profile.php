@@ -1,18 +1,16 @@
 <?php
 session_start();
 include 'db.php';
-include 'lang.php'; // تضمين ملف اللغة
+include 'lang.php'; 
 
 if (!isset($_SESSION['admin'])) {
     header("Location: login.php");
     exit();
 }
 
-// تحديد اللغة والاتجاه
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en';
 $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 
-// جلب بيانات الأدمن الحالي عبر الجلسة (Session)
 $admin_user = $_SESSION['admin'];
 $res = mysqli_query($conn, "SELECT * FROM admins WHERE username = '$admin_user'");
 $data = mysqli_fetch_assoc($res);
@@ -22,7 +20,6 @@ if (isset($_POST['update_profile'])) {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $password = $_POST['password'];
     
-    // منطق تحديث الصورة الذكي
     if (!empty($_FILES['image']['name'])) {
         $image_name = "admin_" . time() . "_" . basename($_FILES['image']['name']);
         $target_path = "img/" . $image_name; 
@@ -38,7 +35,6 @@ if (isset($_POST['update_profile'])) {
         $final_image = $data['image']; 
     }
 
-    // منطق كلمة المرور
     if (!empty($password)) {
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
         $sql = "UPDATE admins SET username='$username', password='$hashed_password', image='$final_image' WHERE id=$id";

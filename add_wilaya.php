@@ -8,11 +8,9 @@ if (!isset($_SESSION['admin'])) { header("Location: login.php"); exit(); }
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en';
 $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 
-// --- التعديل الثاني: ميزة الحذف الآمن دون المساس بأسطر الولايات الجزائرية الثابتة ---
 if (isset($_GET['delete'])) {
     $delete_code = mysqli_real_escape_string($conn, $_GET['delete']);
     
-    // نقوم بتفريغ البيانات والصورة (جعلها NULL وفارغة) لتبقى الولاية واسمها محفوظين في الـ BDD
     $sql_delete = "UPDATE wilayas SET description_ar = NULL, description_en = NULL, 
                    image = NULL, lat = NULL, lng = NULL WHERE code = '$delete_code'";
                    
@@ -33,14 +31,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $image_db_path = ""; 
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-        // التعديل الأول: المجلد الفعلي المخصص للولايات بحسب هيكلتك الجديدة
         $target_dir = "img/wilayas/"; 
         if (!is_dir($target_dir)) { mkdir($target_dir, 0777, true); }
         $file_name = time() . "_" . basename($_FILES["image"]["name"]);
         $target_file = $target_dir . $file_name;
         
         if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-            // تخزين اسم الصورة النظيف واللازم فقط داخل قاعدة البيانات مرونة تامة
             $image_db_path = $file_name; 
         }
     }

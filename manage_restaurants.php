@@ -18,7 +18,6 @@ if (isset($_GET['delete'])) {
     exit();
 }
 
-// استعلام يجلب البيانات باللغتين
 $query = "SELECT r.*, w.name_en as wilaya_name_en, w.name_ar as wilaya_name_ar 
           FROM restaurants r 
           LEFT JOIN wilayas w ON r.wilaya_id = w.id 

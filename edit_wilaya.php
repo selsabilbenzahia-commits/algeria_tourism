@@ -19,8 +19,8 @@ if (isset($_POST['update'])) {
     $name_ar = mysqli_real_escape_string($conn, $_POST['name_ar']);
     $desc_en = mysqli_real_escape_string($conn, $_POST['description_en']);
     $desc_ar = mysqli_real_escape_string($conn, $_POST['description_ar']);
-    $lat = mysqli_real_escape_string($conn, $_POST['lat']); // إضافة الإحداثيات
-    $lng = mysqli_real_escape_string($conn, $_POST['lng']); // إضافة الإحداثيات
+    $lat = mysqli_real_escape_string($conn, $_POST['lat']); 
+    $lng = mysqli_real_escape_string($conn, $_POST['lng']); 
 
     $image_sq = "";
     if (!empty($_FILES['image']['name'])) {
@@ -77,7 +77,6 @@ if (isset($_POST['update'])) {
         
         .form-container { background: white; padding: 35px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 900px; margin: auto; }
         
-        /* زر الرجوع العلوي - تم تعديل التموضع */
         .back-nav { margin-bottom: 20px; display: flex; justify-content: flex-start; }
         .btn-back { color: var(--gray); text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 15px; }
         .btn-back:hover { color: var(--gold); transform: translateX(<?= ($lang == 'ar' ? '5px' : '-5px') ?>); }
@@ -96,7 +95,6 @@ if (isset($_POST['update'])) {
         .preview-wrapper { display: flex; align-items: center; gap: 20px; background: #f1f5f9; padding: 15px; border-radius: 12px; border: 1px dashed #cbd5e1; }
         .preview-img { width: 130px; height: 85px; border-radius: 8px; object-fit: cover; border: 3px solid white; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
         
-        /* تنسيق الأزرار السفلية الجديد - متناسق وجميل */
         .form-actions { display: flex; gap: 20px; margin-top: 40px; padding-top: 20px; border-top: 1px solid #f1f5f9; }
         
         .btn-action { 

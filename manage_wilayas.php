@@ -1,23 +1,19 @@
 <?php
 session_start();
 include 'db.php';
-include 'lang.php'; // استدعاء ملف اللغات المحفوظ
+include 'lang.php'; 
 
 if (!isset($_SESSION['admin'])) { header("Location: login.php"); exit(); }
 
-// تحديد اللغة والجهة
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en';
 $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 
-// --- التعديل المطلب: تحويل الحذف التدميري إلى حذف آمن يحفظ أسطر الولايات الجزائرية ---
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     
-    // --- التعديل المصلح: تحويل الحذف التدميري إلى حذف آمن بتفريغ النصوص والصور بدون NULL ---
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     
-    // نضع '' للحقول النصية، ونضع 0 لحقول الأرقام العشريّة (lat و lng) لحماية الـ BDD
     $sql_safe_delete = "UPDATE wilayas SET 
                         description_ar = '', 
                         description_en = '', 
@@ -26,7 +22,6 @@ if (isset($_GET['delete'])) {
                         lng = 0 
                         WHERE id = $id";
                         
-    // هنا يأتي السطر 20 الخاص بك لتنفيذ الاستعلام
     if (mysqli_query($conn, $sql_safe_delete)) {
         header("Location: manage_wilayas.php?success=1");
         exit();
@@ -40,7 +35,6 @@ if (isset($_GET['delete'])) {
     exit();
 }
 
-// استبدل السطر القديم بهذا الشرط
 $query = "SELECT * FROM wilayas WHERE image IS NOT NULL AND image != '' AND lat IS NOT NULL";
 $result = mysqli_query($conn, $query);
 ?>

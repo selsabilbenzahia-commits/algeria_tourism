@@ -11,14 +11,12 @@ $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name_en = mysqli_real_escape_string($conn, $_POST['name_en']);
     $name_ar = mysqli_real_escape_string($conn, $_POST['name_ar']); 
-    // تم تصحيح المفتاح ليتوافق تماماً مع حقل السلكت في الأسفل دون تغيير المتغير
     $wilaya_id = $_POST['wilaya_code'];
     $lat = $_POST['lat'];
     $lng = $_POST['lng'];
 
     $image_path = ""; 
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-        // التعديل الأساسي: المجلد الفعلي المخصص للفنادق
         $target_dir = "img/hotels/"; 
         if (!is_dir($target_dir)) { mkdir($target_dir, 0777, true); }
         
@@ -26,8 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $target_file = $target_dir . $file_name;
         
         if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-            // التعديل السحري: تخزين اسم الملف النظيف والصافي فقط في الـ Database
-            $image_path = $file_name; 
         }
     }
 

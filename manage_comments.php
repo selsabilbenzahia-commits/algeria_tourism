@@ -7,7 +7,6 @@ include 'db.php';
 include 'lang.php';
 
 
-
 if (!isset($_SESSION['admin'])) {
 
     header("Location: login.php");
@@ -17,14 +16,10 @@ if (!isset($_SESSION['admin'])) {
 }
 
 
-
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en';
 
 $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 
-
-
-// كود الحذف
 
 if (isset($_GET['delete'])) {
 
@@ -40,7 +35,6 @@ if (isset($_GET['delete'])) {
 
 
 
-// استعلام يجلب التعليقات مع اسم المستخدم
 
 $query = "SELECT c.*, u.name as user_name FROM comments c
 
@@ -75,9 +69,6 @@ $result = mysqli_query($conn, $query);
         body { display: flex; background: var(--light); min-height: 100vh; }
 
 
-
-        /* السايدبار الديناميكي */
-
         .sidebar {
 
             width: 260px; height: 100vh; background: var(--dark); color: white; padding: 20px; position: fixed;
@@ -96,9 +87,6 @@ $result = mysqli_query($conn, $query);
 
         .sidebar ul li i { <?php echo ($lang == 'ar') ? 'margin-left: 10px;' : 'margin-right: 10px;'; ?> color: var(--gold); width: 20px; text-align: center; }
 
-
-
-        /* المحتوى الرئيسي */
 
         .main-content {
 

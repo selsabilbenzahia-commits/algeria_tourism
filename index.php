@@ -11,7 +11,6 @@ if(isset($_SESSION['user_id'])) {
     }
 }
 
-// جلب الإحصائيات بدقة
 $res_wilayas = mysqli_query($conn, "SELECT COUNT(*) as total FROM wilayas  WHERE image IS NOT NULL AND image != '' ORDER BY code ASC");
 $count_wilayas = mysqli_fetch_assoc($res_wilayas)['total'];
 
@@ -231,7 +230,6 @@ while($attr = mysqli_fetch_assoc($res)) {
     box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; border: none;
 }
 
-/* إضافة ألوان لكسر المود */
 .card-blue { border-bottom: 5px solid #0984e3; }
 .card-blue .stat-icon-v4 { color: #0984e3; }
 .card-blue h3 { color: #0984e3; }
@@ -783,32 +781,26 @@ document.getElementById('sendReviewBtn').addEventListener('click',()=>{
     });
 
 });
-// دالة تشغيل وعرض الخريطة التفاعلية الآمنة بالتصميم الأبيض الفخم
 function showMapModal(lat, lng, itemName) {
     if(!lat || !lng) {
         alert("إحداثيات هذا الموقع غير متوفرة حالياً.");
         return;
     }
     
-    // تحديث العنوان المكتوب بالأسود داخل الـ Modal الجديد باسم الموقع الممرر
     document.getElementById('modalTitle').innerText = itemName;
     
-    // تصحيح بناء الرابط التفاعلي لخرائط جوجل لتفادي خطأ الـ Syntax
     const embedUrl = "https://maps.google.com/maps?q=" + lat + "," + lng + "&t=&z=14&ie=UTF8&iwloc=&output=embed";
     
-    // تمرير الرابط المصلح وعرض النافذة بمرونة تامة عبر jQuery
     document.getElementById('mapIframe').src = embedUrl;
     $('#mapModal').css('display', 'flex').fadeIn(300);
 }
 
-// دالة إغلاق الخريطة وتفريغ الإطار تماماً لمنع ثقل السيرفر
 function closeMapModal() {
     $('#mapModal').fadeOut(200, function() {
         document.getElementById('mapIframe').src = "";
     });
 }
 
-// غلق نافذة الخريطة تلقائياً إذا نقر المستخدم في المساحة الرمادية المحيطة
 window.addEventListener('click', function(event) {
     const modal = document.getElementById('mapModal');
     if (event.target == modal) {
@@ -817,8 +809,6 @@ window.addEventListener('click', function(event) {
 });
 
 </script>
-
-<!-- ================= END REVIEW SECTION ================= -->
 
 <!-- ================= AI ASSISTANT ================= -->
 
@@ -1121,26 +1111,21 @@ function sendMessage() {
 
     if (message === "") return;
 
-    // إظهار رسالة المستخدم
     chatBody.innerHTML += `<div class="user-message">${message}</div>`;
     input.value = "";
     chatBody.scrollTop = chatBody.scrollHeight;
 
-    // إظهار أن البوت "يفكر"
     let typingId = "typing_" + Date.now();
     chatBody.innerHTML += `<div class="bot-message" id="${typingId}">...</div>`;
 
-    // إرسال الطلب لقاعدة البيانات عبر ملف PHP
    fetch('bot_engine.php?query=' + encodeURIComponent(message) + '&lang=<?= $lang ?>')
     .then(response => response.json())
     .then(data => {
-        document.getElementById(typingId).remove(); // إزالة النقاط الثلاث
+        document.getElementById(typingId).remove(); 
         
-        // عرض رد البوت
         let botMsg = `<div class="bot-message">${data.reply}</div>`;
         chatBody.innerHTML += botMsg;
 
-        // عرض الاقتراحات كأزرار
         if (data.suggestions && data.suggestions.length > 0) {
             let sugHTML = `<div class="bot-suggestions">`;
             data.suggestions.forEach(s => {
@@ -1157,7 +1142,6 @@ function sendMessage() {
     });
 }
 
-// دالة للاقتراحات السريعة
 function quickSearch(txt) {
     document.getElementById("userInput").value = txt;
     sendMessage();

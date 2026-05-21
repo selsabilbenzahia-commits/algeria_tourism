@@ -4,11 +4,9 @@ include('lang.php');
 
 $lang = $_SESSION['lang'] ?? 'ar';
 
-// محاكاة: نقوم بتعيين جلسة مستخدم وهمية لتجربة الموقع
 $_SESSION['user'] = "Google User";
 $_SESSION['user_id'] = 999; 
 
-// توجيه تلقائي بعد 3 ثواني لإعطاء شعور بالتحقق
 header("refresh:3;url=index.php");
 ?>
 

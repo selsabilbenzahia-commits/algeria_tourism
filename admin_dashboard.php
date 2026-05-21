@@ -88,7 +88,6 @@ for($i=1;$i<=5;$i++){
 }
 
 /* ================== SUGGESTIONS ================== */
-// قمنا بتحديث الاستعلام هنا ليجلب أيضاً حقل suggestion المكتوب نصاً
 $suggestions_query = mysqli_query($conn,"
     SELECT selected_options, suggestion, rating
     FROM site_reviews
@@ -726,7 +725,6 @@ $one_star = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FRO
     font-weight:800;
 }
 
-/* Suggestions */
 .modern-suggestions{
     max-height:500px;
     overflow:hidden;

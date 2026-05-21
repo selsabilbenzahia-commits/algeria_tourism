@@ -10,48 +10,39 @@ if(!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $lang = $_GET['lang'] ?? ($_SESSION['lang'] ?? 'en');
 
-// 1. جلب بيانات المستخدم الحالية
 $user_query = "SELECT name, email, profile_image FROM users WHERE id = '$user_id'";
 $user_result = mysqli_query($conn, $user_query);
 $user_data = mysqli_fetch_assoc($user_result);
 
-// 2. معالجة تحديث البيانات عند الضغط على زر الحفظ (Save Changes)
 $update_msg = "";
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
     $new_username = mysqli_real_escape_string($conn, $_POST['username']);
     $new_email = mysqli_real_escape_string($conn, $_POST['email']);
     
-    // الاحتفاظ بالمسار القديم في حال لم يتم رفع صورة جديدة
     $final_image_path = $user_data['profile_image'];
 
-    // فحص ما إذا تم اختيار صورة جديدة بنجاح وبدون أخطاء
     if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] == 0) {
-        $target_dir = "img/users/"; // مجلد حفظ صور المستخدمين
+        $target_dir = "img/users/"; 
         
-        // إنشاء المجلد إذا لم يكن موجوداً تلقائياً
         if (!file_exists($target_dir)) {
             mkdir($target_dir, 0777, true);
         }
 
         $file_extension = pathinfo($_FILES['profile_pic']['name'], PATHINFO_EXTENSION);
-        // تسمية الصورة برقم الآيدي الخاص بالمستخدم لكي لا تتكرر الأسماء
         $image_name = "user_" . $user_id . "." . $file_extension; 
         $target_file = $target_dir . $image_name;
 
-        // رفع الملف إلى المجلد بنجاح
         if (move_uploaded_file($_FILES['profile_pic']['tmp_name'], $target_file)) {
-            // هنا نعتمد المسار الكامل والمكتمل ليتم حفظه في قاعدة البيانات
             $final_image_path = $target_file;
         }
     }
 
-    // استعلام التحديث الذكي: يحفظ المسار الكامل مكملاً في الـ db
     $update_query = "UPDATE users SET name = '$new_username', email = '$new_email', profile_image = '$final_image_path' WHERE id = '$user_id'";
     
     if (mysqli_query($conn, $update_query)) {
         $user_data['name'] = $new_username;
         $user_data['email'] = $new_email;
-        $user_data['profile_image'] = $final_image_path; // تحديث مصفوفة العرض بالمسار الجديد الكامل
+        $user_data['profile_image'] = $final_image_path; 
         $_SESSION['username'] = $new_username; 
         $update_msg = ($lang == 'ar') ? "تم تحديث البيانات بنجاح!" : "Profile updated successfully!";
     } else {
@@ -59,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
     }
 }
 
-// 3. استعلام المفضلات المشترك
 $query = "
     SELECT f.id as fav_id, a.id as item_id, 
         (CASE WHEN '$lang' = 'ar' THEN a.name_ar ELSE a.name_en END) as name, 

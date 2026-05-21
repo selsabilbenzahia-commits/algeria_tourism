@@ -12,7 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name_ar = mysqli_real_escape_string($conn, $_POST['name_ar']);
     $name_en = mysqli_real_escape_string($conn, $_POST['name_en']);
     
-    // تصحيح الاستقبال: استقبلنا الحقل المختار من الـ Select مباشرة
     $wilaya_id = intval($_POST['wilaya_id']); 
     $cat_id = $_POST['category_id'];
     $lat = $_POST['lat'];
@@ -27,20 +26,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $attraction_id = mysqli_insert_id($conn); 
 
         if (isset($_FILES['images'])) {
-            // المجلد الذي يتم رفع الملفات إليه ماديًا في السيرفر
             $target_dir = "img/attractions/"; 
             
             foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
                 if ($_FILES['images']['error'][$key] == 0) {
                     
-                    // توليد اسم الصورة الفريد الخاص بكِ
                     $file_name = "attr_" . $attraction_id . "_" . time() . "_" . $key . "_" . basename($_FILES["images"]["name"][$key]);
                     $target_file = $target_dir . $file_name;
                     
-                    // رفع الملف ماديًا إلى المجلد
                     if (move_uploaded_file($tmp_name, $target_file)) {
                         
-                        // التعديل السحري: نخزن اسم الملف فقط ($file_name) في قاعدة البيانات بدون أي مسارات
                         $db_path = $file_name; 
                         
                         mysqli_query($conn, "INSERT INTO attraction_images (attraction_id, image) VALUES ('$attraction_id', '$db_path')");

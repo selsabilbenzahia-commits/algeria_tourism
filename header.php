@@ -9,14 +9,12 @@ $_SESSION['lang'] = $lang;
 include 'lang.php';
 include 'db.php';
 
-// بناء روابط اللغة الذكية
 $current_params = $_GET;
 $current_params['lang'] = 'ar';
 $ar_link = "?" . http_build_query($current_params);
 $current_params['lang'] = 'en';
 $en_link = "?" . http_build_query($current_params);
 
-// جلب مسار الصورة من عمود profile_image كما هو في قاعدة البيانات تماماً
 $header_user_image = "";
 if (isset($_SESSION['user_id'])) {
     $current_u_id = $_SESSION['user_id'];
@@ -182,13 +180,11 @@ function startAiDiscovery() {
     }
 }
 
-// دالة الضغط الأصلية مع منع انتشار الحدث لضمان عمل الاختفاء التلقائي بسلاسة
 function toggleUserMenu(event) {
     if (event) event.stopPropagation();
     document.getElementById("userDropdown").classList.toggle("show");
 }
 
-// كود إغلاق النافذة المنسدلة تلقائياً عند الضغط في أي مكان فارغ بالواجهة
 window.addEventListener('click', function(e) {
     const dropdown = document.getElementById('userDropdown');
     if (dropdown && dropdown.classList.contains('show')) {

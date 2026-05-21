@@ -1,23 +1,20 @@
 <?php
 session_start();
 include 'db.php';
-include 'lang.php'; // تضمين ملف اللغة
+include 'lang.php'; 
 
 if (!isset($_SESSION['admin'])) {
     header("Location: login.php");
     exit();
 }
 
-// تحديد اللغة والاتجاه
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en';
 $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 
 $id = intval($_GET['id']);
-// جلب بيانات المطعم الحالية (كودك الأصلي كما هو)
 $res = mysqli_query($conn, "SELECT * FROM restaurants WHERE id = $id");
 $data = mysqli_fetch_assoc($res);
 
-// جلب الولايات للقائمة المنسدلة
 $wilayas = mysqli_query($conn, "SELECT * FROM wilayas");
 
 if (isset($_POST['update'])) {
@@ -27,13 +24,12 @@ if (isset($_POST['update'])) {
     $lat = $_POST['lat'];
     $lng = $_POST['lng'];
     
-    // --- التعديل المطلب: ضبط منطق تعديل الصورة ليتوافق مع الاسم الصافي والمجلد الجديد ---
     if (!empty($_FILES['image']['name'])) {
         $image_name = time() . '_' . basename($_FILES['image']['name']);
-        $target_path = "img/restaurants/" . $image_name; // المسار المادي الفعلي للرفع
+        $target_path = "img/restaurants/" . $image_name; 
         
         if (move_uploaded_file($_FILES['image']['tmp_name'], $target_path)) {
-            $final_image = $image_name; // حفظ الاسم الصافي فقط في قاعدة البيانات
+            $final_image = $image_name; 
         } else {
             $final_image = $data['image'];
         }
@@ -69,7 +65,6 @@ if (isset($_POST['update'])) {
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
         body { display: flex; background: var(--light); }
         
-        /* السايدبار حسب اللغة (كودك الأصلي) */
         .sidebar { width: 260px; height: 100vh; background: var(--dark); color: white; padding: 20px; position: fixed; <?php echo ($lang == 'ar' ? 'right: 0;' : 'left: 0;'); ?> }
         .sidebar h2 { text-align: center; color: var(--gold); margin-bottom: 30px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
         .sidebar ul { list-style: none; }
@@ -77,12 +72,10 @@ if (isset($_POST['update'])) {
         .sidebar ul li a { color: white; text-decoration: none; display: flex; align-items: center; }
         .sidebar ul li i { <?php echo ($lang == 'ar' ? 'margin-left: 10px;' : 'margin-right: 10px;'); ?> color: var(--gold); }
 
-        /* المحتوى حسب اللغة */
         .main-content { <?php echo ($lang == 'ar' ? 'margin-right: 260px;' : 'margin-left: 260px;'); ?> width: calc(100% - 260px); padding: 40px; }
         
         .form-container { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 800px; margin: auto; }
         
-        /* زر الرجوع المضاف */
         .back-nav { margin-bottom: 20px; text-align: <?php echo ($lang == 'ar' ? 'right' : 'left'); ?>; }
         .btn-back { color: #64748b; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 15px; }
         .btn-back:hover { color: var(--gold); }
@@ -96,7 +89,6 @@ if (isset($_POST['update'])) {
         
         .current-img-preview { margin: 10px 0; border: 2px solid var(--gold); border-radius: 8px; width: 120px; height: 120px; object-fit: cover; }
         
-        /* تنسيق الأزرار لتكون متساوية (قدقد) */
         .form-actions { display: flex; gap: 15px; margin-top: 30px; }
         .btn-update { flex: 1; background: var(--gold); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
         .btn-reset { flex: 1; background: #e2e8f0; color: #475569; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }

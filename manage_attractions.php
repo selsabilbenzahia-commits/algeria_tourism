@@ -18,7 +18,6 @@ if (isset($_GET['delete'])) {
     exit();
 }
 
-// الاستعلام المصلح مع استخدام Aliases لأسماء الولايات
 $query = "SELECT a.*, 
                  w.name_en AS wilaya_name_en, 
                  w.name_ar AS wilaya_name_ar, 

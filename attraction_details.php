@@ -3,7 +3,6 @@ include('lang.php');
 include 'db.php';
 session_start();
 
-// 1. تحديد اللغة وحفظها في السشن لضمان استمراريتها
 if (isset($_GET['lang'])) {
     $lang = $_GET['lang'];
     $_SESSION['lang'] = $lang; 
@@ -16,11 +15,9 @@ if (isset($_GET['lang'])) {
 $main_image = 'default.jpg'; 
 $all_images = [];
 
-// 2. التأكد من وجود id المعلم في الرابط
 if (isset($_GET['id'])) {
-    $attr_id = $_GET['id']; // هذا السطر ضروري جداً
+    $attr_id = $_GET['id']; 
     
-    // 3. الاستعلام المحدث لجلب اسم الولاية باللغتين
     $query = "SELECT a.*, w.name_en as wilaya_name_en, w.name_ar as wilaya_name_ar 
               FROM attractions a 
               JOIN wilayas w ON a.wilaya_id = w.id 
@@ -32,7 +29,6 @@ if (isset($_GET['id'])) {
         die("!the attraction does not exist"); 
     }
 
-    // جلب الصور الإضافية
     $img_query = "SELECT image FROM attraction_images WHERE attraction_id = '$attr_id'";
     $img_result = mysqli_query($conn, $img_query);
     while($row = mysqli_fetch_assoc($img_result)) {
@@ -149,12 +145,9 @@ function updateHero(imgSrc) {
 </div>
 
 <script>
-// مصفوفة الصور الأصلية القادمة من السيرفر
 var rawImages = <?php echo json_encode($all_images); ?>;
 
-// الحل الذكي: بناء مصفوفة جديدة تحتوي على المسار الكامل الصحيح لكل الصور تلقائياً
 var imagesArray = rawImages.map(function(img) {
-    // إذا كان الاسم يحتوي مسبقاً على المجلد لا نكرره، وإلا نضيفه
     if (img.startsWith('img/attractions/')) {
         return img;
     } else {
@@ -164,15 +157,12 @@ var imagesArray = rawImages.map(function(img) {
 
 var currentIndex = 0;
 
-// دالة فتح الـ Modal
 function openModal(imgSrc) {
     var modal = document.getElementById("imageModal");
     var modalImg = document.getElementById("img01");
     
-    // الآن البحث سينجح 100% لأن المسارات متطابقة في المصفوفة
     currentIndex = imagesArray.indexOf(imgSrc);
     
-    // إذا لم يجدها لأي سبب، نجعل المؤشر يبدأ من 0 كحماية للكود
     if (currentIndex === -1) {
         currentIndex = 0;
     }
@@ -181,11 +171,9 @@ function openModal(imgSrc) {
     modalImg.src = imgSrc;
 }
 
-// دالة تقليب الصور (يمين ويسار) المضمونة
 function changeImage(n) {
     currentIndex += n;
     
-    // حلقة دائرية تمنع خروج المؤشر عن النطاق
     if (currentIndex >= imagesArray.length) { 
         currentIndex = 0; 
     }
@@ -193,11 +181,9 @@ function changeImage(n) {
         currentIndex = imagesArray.length - 1; 
     }
     
-    // تمرير المسار الكامل المصلح مباشرة لمنع ظهور الأيقونة المكسورة
     document.getElementById("img01").src = imagesArray[currentIndex];
 }
 
-// دالة غلق الـ Modal
 function closeModal() {
     document.getElementById("imageModal").style.display = "none";
 }
@@ -207,7 +193,7 @@ function closeModal() {
 <script>
 $(document).ready(function() {
     $('#commentForm').on('submit', function(e) {
-        e.preventDefault(); // هذا هو السر اللي يخلي الصفحة ما تطلعش للفوق
+        e.preventDefault(); 
 
         var attr_id = $('#attr_id').val();
         var comment = $('#comment_text_area').val();
@@ -218,7 +204,7 @@ $(document).ready(function() {
             data: { id: attr_id, comment_text: comment },
             success: function(response) {
                 $('.comments-list-v2').prepend(response);
-                $('#comment_text_area').val(''); // تفريغ الخانة بعد الإرسال[cite: 3]
+                $('#comment_text_area').val(''); 
             }
         });
     });

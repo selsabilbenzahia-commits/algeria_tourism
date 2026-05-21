@@ -18,7 +18,6 @@ if (isset($_GET['delete'])) {
     exit();
 }
 
-// استعلام يجلب البيانات باللغتين للولايات والفنادق
 $query = "SELECT h.*, w.name_en as wilaya_name_en, w.name_ar as wilaya_name_ar 
           FROM hotels h 
           LEFT JOIN wilayas w ON h.wilaya_id = w.id 

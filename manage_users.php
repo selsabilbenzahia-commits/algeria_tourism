@@ -4,7 +4,6 @@ session_start();
 
 $lang = $_GET['lang'] ?? ($_SESSION['lang'] ?? 'en');
 
-// معالجة حذف المستخدم عن طريق الأجاكس (AJAX) لسرعة الأداء
 if (isset($_POST['action']) && $_POST['action'] == 'delete_user') {
     $u_id = mysqli_real_escape_string($conn, $_POST['user_id']);
     $delete_query = "DELETE FROM users WHERE id = '$u_id'";
@@ -16,13 +15,11 @@ if (isset($_POST['action']) && $_POST['action'] == 'delete_user') {
     exit();
 }
 
-// جلب إجمالي عدد المستخدمين
 $count_query = "SELECT COUNT(*) as total FROM users";
 $count_result = mysqli_query($conn, $count_query);
 $count_data = mysqli_fetch_assoc($count_result);
 $total_users = $count_data['total'];
 
-// جلب تفاصيل المستخدمين بناءً على أعمدة قاعدة البيانات الخاصة بكِ
 $users_query = "SELECT id, name, email, profile_image, phone, created_at FROM users ORDER BY created_at DESC";
 $users_result = mysqli_query($conn, $users_query);
 ?>

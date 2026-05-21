@@ -3,7 +3,6 @@ session_start();
 include 'db.php'; 
 include('lang.php');
 
-// إدارة اللغة
 if (isset($_GET['lang'])) {
     $lang = $_GET['lang'];
     $_SESSION['lang'] = $lang; 
@@ -16,29 +15,24 @@ if (isset($_GET['lang'])) {
 $error = "";
 $success = "";
 
-// معالجة البيانات عند إرسال النموذج
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
-    // التحقق من تطابق كلمات المرور
     if ($password !== $confirm_password) {
         $error = ($lang == 'ar') ? "كلمات المرور غير متطابقة!" : "Passwords do not match!";
     } else {
-        // التحقق من وجود المستخدم مسبقاً
         $check_user = mysqli_query($conn, "SELECT * FROM users WHERE name='$username' OR email='$email'");
         if (mysqli_num_rows($check_user) > 0) {
             $error = ($lang == 'ar') ? "اسم المستخدم أو البريد الإلكتروني موجود مسبقاً!" : "Username or Email already exists!";
         } else {
-            // تشفير كلمة المرور وحفظ البيانات
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             $insert_query = "INSERT INTO users (name, email, password) VALUES ('$username', '$email', '$hashed_password')";
             
             if (mysqli_query($conn, $insert_query)) {
                 $success = ($lang == 'ar') ? "تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول." : "Account created successfully! You can now log in.";
-                // توجيه تلقائي بعد 3 ثواني لصفحة الدخول
                 header("refresh:3;url=login.php");
             } else {
                 $error = ($lang == 'ar') ? "حدث خطأ أثناء التسجيل، حاول مجدداً." : "Error occurred, please try again.";

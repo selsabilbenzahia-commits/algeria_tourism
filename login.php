@@ -62,7 +62,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .login-wrapper { display: flex; height: 100vh; width: 100%; } 
         .form-section { flex: 1; background: #fff; display: flex; align-items: center; justify-content: center; padding: 60px; z-index: 2; overflow-y: auto; position: relative; }
 
-        /* زر الرجوع الأنيق */
         .back-home { position: absolute; top: 30px; <?php echo ($lang == 'ar') ? 'right: 30px;' : 'left: 30px;'; ?> text-decoration: none; color: #c5a059; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
         .back-home:hover { color: #333; transform: translateX(<?php echo ($lang == 'ar') ? '5px' : '-5px'; ?>); }
 

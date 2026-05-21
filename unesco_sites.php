@@ -45,7 +45,6 @@ if(isset($_SESSION['user_id'])) {
 
         <div class="wilayas-grid">
             <?php
-            // استعلام تصفية معالم اليونسكو بالاعتماد على الحقل الحقيقي في جدولك is_unesco = 1
             $sql = "SELECT a.*, i.image AS attraction_image 
                     FROM attractions a 
                     LEFT JOIN attraction_images i ON a.id = i.attraction_id 

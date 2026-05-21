@@ -12,7 +12,6 @@ if(isset($_GET['lang'])){
 
 $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 
-// جلب المفضلة الخاصة بالمستخدم
 $user_favs = [];
 if(isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
@@ -63,7 +62,6 @@ if(isset($_SESSION['user_id'])) {
 
         <div class="wilayas-grid">
             <?php
-            // استعلام نظيف يدمج المعالم مع جدول صورها (يجلب صورة واحدة فقط لكل معلم لمنع التكرار)
             $sql = "SELECT a.*, i.image AS attraction_image 
                     FROM attractions a 
                     LEFT JOIN attraction_images i ON a.id = i.attraction_id 
@@ -74,7 +72,6 @@ if(isset($_SESSION['user_id'])) {
             
             if($res && mysqli_num_rows($res) > 0) {
                 while($row = mysqli_fetch_assoc($res)) {
-                    // الحفاظ على كروت التصميم الأصلية للولايات لكي لا يختل الستايل
                     $card_size = 'wilaya-card-standard'; 
                     $imageUrl = $row['attraction_image'] ? $row['attraction_image'] : 'default.jpg'; 
                     $cat_class = 'cat-' . $row['categorie_id']; 
@@ -123,7 +120,6 @@ if(isset($_SESSION['user_id'])) {
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function(){
-    // سكربت الفلترة الخاص بكروت الصفحة
     $('.filter-btn').click(function(){
         $('.filter-btn').removeClass('active');
         $(this).addClass('active');
@@ -136,7 +132,6 @@ $(document).ready(function(){
         }
     });
 
-    // سكربت المفضلة المربوط بملف favorite.php
     $('.main-fav-btn').click(function(e) {
         e.preventDefault();
         var btn = $(this);
@@ -168,7 +163,6 @@ function showMapModal(lat, lng, name) {
         return;
     }
     document.getElementById('modalTitle').innerText = name;
-    // تم تصحيح الرابط ليعمل بشكل سليم وتمرير خطوط الطول والعرض بدقة
     const mapUrl = `https://maps.google.com/maps?q=${lat},${lng}&hl=<?php echo $lang; ?>&z=15&output=embed`;
     document.getElementById('googleMapFrame').src = mapUrl;
     document.getElementById('mapModal').style.display = 'block';

@@ -1,23 +1,20 @@
 <?php
 session_start();
 include 'db.php';
-include 'lang.php'; // تضمين ملف اللغة
+include 'lang.php'; 
 
 if (!isset($_SESSION['admin'])) {
     header("Location: login.php");
     exit();
 }
 
-// تحديد اللغة والاتجاه
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en';
 $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
 
 $id = intval($_GET['id']);
-// جلب بيانات الفندق الحالية
 $res = mysqli_query($conn, "SELECT * FROM hotels WHERE id = $id");
 $data = mysqli_fetch_assoc($res);
 
-// جلب الولايات للقائمة المنسدلة
 $wilayas = mysqli_query($conn, "SELECT * FROM wilayas");
 
 if (isset($_POST['update'])) {
@@ -27,7 +24,6 @@ if (isset($_POST['update'])) {
     $lat = $_POST['lat'];
     $lng = $_POST['lng'];
     
-    // منطق الصورة الذكي (حفظ الاسم الصافي داخل المجلد المنظم)
     if (!empty($_FILES['image']['name'])) {
         $image_name = time() . '_' . basename($_FILES['image']['name']);
         $target_path = "img/hotels/" . $image_name; 
@@ -41,7 +37,6 @@ if (isset($_POST['update'])) {
         $final_image = $data['image']; 
     }
 
-    // التحديث بعد حذف حقل السعر تماماً من الاستعلام
     $sql = "UPDATE hotels SET 
             name_en='$name', 
             name_ar='$name_ar', 
@@ -83,7 +78,6 @@ if (isset($_POST['update'])) {
         
         .form-container { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 800px; margin: auto; }
         
-        /* زر الرجوع المضاف بالتنسيق الجديد */
         .back-nav { margin-bottom: 20px; text-align: <?php echo ($lang == 'ar' ? 'right' : 'left'); ?>; }
         .btn-back { color: #64748b; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 15px; }
         .btn-back:hover { color: var(--gold); }
@@ -100,7 +94,6 @@ if (isset($_POST['update'])) {
         
         .current-img-preview { margin: 10px 0; border: 2px solid var(--gold); border-radius: 8px; width: 120px; height: 120px; object-fit: cover; }
         
-        /* تنسيق الأزرار المتساوية (قدقد) */
         .form-actions { display: flex; gap: 15px; margin-top: 30px; }
         .btn-update { flex: 1; background: var(--gold); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
         .btn-reset { flex: 1; background: #e2e8f0; color: #475569; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }

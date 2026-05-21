@@ -3,7 +3,6 @@ include('lang.php');
 include 'db.php'; 
 include 'header.php'; 
 
-// التحقق من الجلسة لضمان عمل "القلب"
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -23,7 +22,6 @@ $col_name = ($lang == 'ar') ? 'name_ar' : 'name_en';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* كل التنسيقات الخاصة بكِ بقيت كما هي دون تغيير */
         .results-page-container { max-width: 1200px; margin: 120px auto 60px; padding: 0 20px; }
         .search-info-header { margin-bottom: 40px; border-inline-start: 6px solid #c5a059; padding-inline-start: 20px; }
         .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
@@ -54,7 +52,6 @@ $col_name = ($lang == 'ar') ? 'name_ar' : 'name_en';
         $found_anything = false;
         $current_user_id = $_SESSION['user_id'] ?? 0;
 
-        // 1. جلب الولايات (فقط التي تملك صورة وإحداثيات كاملة كما طلبتِ)
         $sql_w = "SELECT * FROM wilayas 
                   WHERE (name_ar LIKE '%$query%' OR name_en LIKE '%$query%') 
                   AND image IS NOT NULL AND image != '' 
@@ -69,10 +66,8 @@ $col_name = ($lang == 'ar') ? 'name_ar' : 'name_en';
                 <div class="section-title"><h3><i class="fas fa-map-marked-alt"></i> <?= $texts[$lang]['wilayas'] ?></h3></div>
                 <div class="results-grid">
                     <?php while($w = mysqli_fetch_assoc($res_w)): 
-                        // المسار الجديد: img/wilayas/
                         $w_img = "img/wilayas/" . $w['image'];
                         
-                        // التحقق من المفضلة
                         $is_fav_w = false;
                         if($current_user_id > 0) {
                             $check_f = mysqli_query($conn, "SELECT id FROM favorites WHERE user_id = $current_user_id AND item_id = {$w['id']} AND item_type = 'wilaya'");
@@ -118,7 +113,6 @@ $col_name = ($lang == 'ar') ? 'name_ar' : 'name_en';
                 <div class="section-title"><h3><i class="fas fa-camera-retro"></i> <?= $texts[$lang]['attractions'] ?></h3></div>
                 <div class="results-grid">
                     <?php while($a = mysqli_fetch_assoc($res_a)): 
-                        // المسار الجديد: img/attractions/
                         $a_img = !empty($a['attr_img']) ? "img/attractions/" . $a['attr_img'] : "img/default.jpg";
                         
                         $is_fav_a = false;
@@ -171,7 +165,6 @@ $col_name = ($lang == 'ar') ? 'name_ar' : 'name_en';
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-// كود القلب (AJAX) ليعمل بدون تحديث الصفحة
 $(document).ready(function() {
     $('.main-fav-btn').click(function() {
         var btn = $(this);
@@ -184,10 +177,8 @@ $(document).ready(function() {
     });
 });
 
-// وظائف الخريطة الأصلية التي طلبتِها
 function showMapModal(lat, lng, name) {
     document.getElementById('modalTitle').innerText = name;
-    // تم الحفاظ على نفس رابط الـ iframe الذي كان في كودك
     document.getElementById('googleMapFrame').src = `https://maps.google.com/maps?q=${lat},${lng}&hl=<?= $lang ?>&z=15&output=embed`;
     document.getElementById('mapModal').style.display = 'block';
 }

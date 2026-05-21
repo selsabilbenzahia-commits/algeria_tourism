@@ -11,7 +11,6 @@ if(isset($_GET['lang'])){
 }
 
 $dir = ($lang == 'ar') ? 'rtl' : 'ltr';
-// التأكد من وجود مصفوفة المفضلة لتجنب الأخطاء
 $user_favs = isset($user_favs) ? $user_favs : []; 
 ?>
 <!DOCTYPE html>
@@ -35,7 +34,6 @@ $user_favs = isset($user_favs) ? $user_favs : [];
             <div class="title-line" style="width: 80px; height: 3px; background: #c5a059; margin: 10px auto;"></div>
         </header>
 
-        <!-- استخدمنا نفس الكلاس wilayas-grid ليتطبق الـ CSS الخاص بالرئيسية -->
         <div class="wilayas-grid">
             <?php
             $sql = "SELECT * FROM wilayas WHERE image IS NOT NULL AND image != '' ORDER BY code ASC";
@@ -43,22 +41,18 @@ $user_favs = isset($user_favs) ? $user_favs : [];
             
             if($res && mysqli_num_rows($res) > 0) {
                 while($row = mysqli_fetch_assoc($res)) {
-                    // جعلنا كل الكادرات standard في هذه الصفحة لانتظام الشكل، أو يمكنكِ ترك المنطق القديم
                     $card_size = 'wilaya-card-standard'; 
                     $imageUrl = $row['image']; 
             ?>
-                <!-- هيكل الكادر مطابق تماماً للصفحة الرئيسية -->
                 <div class="wilaya-card <?php echo $card_size; ?>">
                     <div class="wilaya-img-wrapper">
                         <img src="img/wilayas/<?php echo $imageUrl; ?>" alt="<?php echo ($lang == 'ar') ? $row['name_ar'] : $row['name_en'];?>" class="wilaya-main-img">
                         
-                        <!-- زر المفضلة بنفس الكلاسات والأسماء -->
                         <button class="card-icon-btn wishlist-btn main-fav-btn" data-id="<?php echo $row['id']; ?>" data-type="wilaya">
                             <i class="<?php echo in_array('wilaya_'.$row['id'], $user_favs) ? 'fas fa-heart' : 'far fa-heart'; ?>" 
                                style="<?php echo in_array('wilaya_'.$row['id'], $user_favs) ? 'color: #ff4757;' : ''; ?>"></i>
                         </button>
                         
-                        <!-- زر الموقع بنفس الكلاس loc-btn-v4 ليتنسق تلقائياً -->
                         <button class="card-icon-btn loc-btn-v4" title="Wilaya location" 
                                 onclick="showMapModal('<?php echo $row['lat']; ?>', '<?php echo $row['lng']; ?>', '<?php echo addslashes(($lang == 'ar') ? $row['name_ar'] : $row['name_en']); ?>')">
                             <i class="fas fa-map-marker-alt"></i>
@@ -81,7 +75,6 @@ $user_favs = isset($user_favs) ? $user_favs : [];
     </div>
 </section>
 
-<!-- نافذة الخريطة المنبثقة -->
 <div id="mapModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7);">
     <div style="background:#fff; width:80%; max-width:800px; margin:5% auto; padding:20px; border-radius:15px; position:relative; height:70vh;">
         <span onclick="closeMapModal()" style="position:absolute; top:10px; right:20px; font-size:30px; cursor:pointer; font-weight:bold;">&times;</span>
@@ -109,7 +102,6 @@ function closeMapModal() {
     document.getElementById('googleMapFrame').src = ''; 
 }
 </script>
-<!-- مكتبة jQuery ضرورية جداً -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>

@@ -19,8 +19,6 @@ $selected_options = isset($_POST['selected_options'])
 ? mysqli_real_escape_string($conn, $_POST['selected_options'])
 : '';
 
-
-// منع التقييم مرتين
 $check = mysqli_query($conn,
 "SELECT * FROM site_reviews WHERE user_id='$user_id'");
 
@@ -28,8 +26,6 @@ if(mysqli_num_rows($check) > 0){
     exit("already_reviewed");
 }
 
-
-// حفظ التقييم
 mysqli_query($conn,
 "INSERT INTO site_reviews
 (user_id,rating,suggestion,selected_options)
@@ -37,12 +33,8 @@ VALUES
 ('$user_id','$rating','$suggestion','$selected_options')"
 );
 
-
-// --------------------
 // notifications
-// --------------------
 
-// اشعار التقييم (تم إزالة حقل type لعدم وجوده في الجدول وتحديد المقروء بـ 0)
 $message = "New site review added (" . $rating . " Stars)";
 
 mysqli_query($conn,
@@ -50,8 +42,6 @@ mysqli_query($conn,
 VALUES ('$message', 0)"
 );
 
-
-// اشعار الاقتراح (تم إزالة حقل type لعدم وجوده في الجدول وتحديد المقروء بـ 0)
 if(!empty($selected_options) || !empty($suggestion)){
 
     $message2 = "New improvement suggestion received";
